@@ -1,7 +1,7 @@
 ﻿using ExaminationSystem.Data;
 using ExaminationSystem.Models;
 using ExaminationSystem.Repositories;
-using ExaminationSystem.ViewModels;
+using ExaminationSystem.ViewModels.Instructors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -13,57 +13,70 @@ namespace ExaminationSystem.Controllers
     [Route("[controller]/[action]")]
     public class InstructorController : ControllerBase
     {
-        [HttpGet]
-        public IEnumerable<InstructorViewModel> GetAll()
-        {
-            InstructorRepository instructorRepository = new InstructorRepository();
+        //[HttpGet]
+        //public IEnumerable<InstructorViewModel> GetAll()
+        //{
+        //    IRepository<Instructor> instructorRepository = new Repository<Instructor>();
 
-            //IEnumerable<Instructor> instructors = instructorRepository.GetAll();
+        //    //IEnumerable<Instructor> instructors = instructorRepository.GetAll();
 
-            //IEnumerable<InstructorViewModel> result = 
-            //    instructorRepository.Get(x => x.ID < 100)
-            //    .Select(x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName }); ;
+        //    IEnumerable<InstructorViewModel> result =
+        //        instructorRepository.Get(x => x.ID < 100)
+        //        .ToViewModels();
 
-            IEnumerable<InstructorViewModel> result =
-                instructorRepository.Get<InstructorViewModel>(x => x.ID < 100,
-                x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName });
+        //    //IEnumerable<InstructorViewModel> result =
+        //    //    instructorRepository.Get<InstructorViewModel>(x => x.ID < 100,
+        //    //    x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName });
 
-            //instructors = instructors.Where(x => x.ID < 100);
+        //    //instructors = instructors.Where(x => x.ID < 100);
 
-            //IEnumerable<InstructorViewModel> result =
-            //    instructors.Select(x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName });
+        //    //IEnumerable<InstructorViewModel> result =
+        //    //    instructors.Select(x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName });
 
-            //foreach (var item in result)
-            //{
-            //    Debug.WriteLine(item.FullName);
-            //}
+        //    //foreach (var item in result)
+        //    //{
+        //    //    Debug.WriteLine(item.FullName);
+        //    //}
 
-            return result;
+        //    return result;
 
 
-            //List<InstructorViewModel> result = new List<InstructorViewModel>();
+        //    //List<InstructorViewModel> result = new List<InstructorViewModel>();
 
-            //foreach (var item in query)
-            //{
-            //    Debug.WriteLine(item.FullName);
-            //    result.Add(item);
-            //}
+        //    //foreach (var item in query)
+        //    //{
+        //    //    Debug.WriteLine(item.FullName);
+        //    //    result.Add(item);
+        //    //}
 
-            //return result;
-        }
+        //    //return result;
+        //}
 
-        [HttpGet]
-        public InstructorViewModel GetByID(int id)
-        {
-            InstructorRepository instructorRepository = new InstructorRepository();
+        //[HttpGet]
+        //public InstructorViewModel GetByID(int id)
+        //{
+        //    IRepository<Instructor> instructorRepository = new Repository<Instructor>();
 
-            var instructor = instructorRepository.GetByID(id);
+        //    var instructor = instructorRepository.GetByID(id);
 
-            return new InstructorViewModel
-            {
-                FName = instructor.FirstName,
-                LName = instructor.LastName,
-            };
-        }
+        //    return instructor.ToViewModel();
+        //}
+
+        //[HttpPut]
+        //public bool Update(InstructorCreateViewModel viewModel)
+        //{
+        //    IRepository<Instructor> repository = new Repository<Instructor>();
+
+        //    var instructor = repository.GetWithTrackinByID(viewModel.ID);
+
+        //    instructor.FirstName = viewModel.FName;
+        //    instructor.LastName = viewModel.LName;
+
+        //    //repository.Update(instructor);
+        //    repository.SaveChanges();
+
+        //    return true;
+        //}
+        
     }
 }

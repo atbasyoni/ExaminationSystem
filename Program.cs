@@ -1,4 +1,7 @@
 
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+
 namespace ExaminationSystem
 {
     public class Program
@@ -14,6 +17,10 @@ namespace ExaminationSystem
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+            builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
+                builder.RegisterModule(new AutoFacModule()));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -26,7 +33,6 @@ namespace ExaminationSystem
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

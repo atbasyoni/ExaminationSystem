@@ -7,6 +7,11 @@ namespace ExaminationSystem.Repositories
 {
     public class InstructorRepository
     {
+        public void Add(Instructor instructor)
+        {
+
+        }
+
         public IQueryable<Instructor> GetAll()
         {
             Context context = new Context();

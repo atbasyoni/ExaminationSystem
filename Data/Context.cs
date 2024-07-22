@@ -6,6 +6,11 @@ namespace ExaminationSystem.Data
 {
     public class Context : DbContext
     {
+        public Context() 
+        {
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        }
+
         public DbSet<Exam> Exams { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Course> Courses { get; set; }

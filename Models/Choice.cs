@@ -5,12 +5,10 @@ namespace ExaminationSystem.Models
     public class Choice : BaseModel
     {
         public string Text { get; set; }
+        public bool IsCorrect { get; set; }
+        public int Points { get; set; }
 
-        public bool IsRightAnswer { get; set; }
-
-        //[ForeignKey("Question")]
         public int QuestionID { get; set; }
         public  Question Question { get; set; }
-
     }
 }

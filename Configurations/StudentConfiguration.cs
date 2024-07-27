@@ -8,8 +8,6 @@ namespace ExaminationSystem.Configurations
     {
         public void Configure(EntityTypeBuilder<Student> builder)
         {
-            builder.HasKey(s => s.ID);
-
             builder.Property(s => s.FirstName)
             .IsRequired()
             .HasMaxLength(50);
@@ -21,18 +19,6 @@ namespace ExaminationSystem.Configurations
             builder.Property(s => s.Email)
             .IsRequired()
             .HasMaxLength(100);
-
-            builder.HasOne(s => s.Major)
-                .WithMany(d => d.Students)
-                .HasForeignKey(s => s.MajorID);
-
-            builder.HasOne(s => s.Address)
-              .WithMany(a => a.Students)
-              .HasForeignKey(s => s.AddressID);
-
-            builder.HasMany(c => c.CourseStudents)
-                .WithOne(cs => cs.Student)
-                .HasForeignKey(cs => cs.StudentID);
         }
     }
 }

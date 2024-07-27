@@ -4,7 +4,7 @@
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime StartDate { get; set; }
         public DateTime DueDate { get; set; }
         public int TotalQuestions { get; set; }
         public int TotalPoints { get; set; }

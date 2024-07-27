@@ -1,4 +1,5 @@
-﻿using ExaminationSystem.Models;
+﻿using ExaminationSystem.Configurations;
+using ExaminationSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -6,9 +7,34 @@ namespace ExaminationSystem.Data
 {
     public class Context : DbContext
     {
-        public Context() 
+        public Context(DbContextOptions<Context> options) : base(options)
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+           base.OnModelCreating(modelBuilder);
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var foreignKey in entityType.GetForeignKeys())
+                {
+                    foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+                }
+            }
+
+           modelBuilder.ApplyConfiguration(new AddressConfiguration());
+           modelBuilder.ApplyConfiguration(new ChoiceConfiguration());
+           modelBuilder.ApplyConfiguration(new CourseConfiguration());
+           modelBuilder.ApplyConfiguration(new CourseInstructorConfiguration());
+           modelBuilder.ApplyConfiguration(new CourseStudentConfiguration());
+           modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
+           modelBuilder.ApplyConfiguration(new ExamConfiguration());
+           modelBuilder.ApplyConfiguration(new ExamQuestionConfiguration());
+           modelBuilder.ApplyConfiguration(new InstructorConfiguration());
+           modelBuilder.ApplyConfiguration(new QuestionConfiguration());
+           modelBuilder.ApplyConfiguration(new StudentConfiguration());
         }
 
         public DbSet<Address> Addresses { get; set; }
@@ -22,19 +48,5 @@ namespace ExaminationSystem.Data
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Student> Students { get; set; }
-
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Source=DESKTOP-N5B45VV\\SQLEXPRESS;Database=ExaminationSystem;Trust Server Certificate=True;")
-                .LogTo(log => Debug.WriteLine(log), LogLevel.Information)
-                .EnableSensitiveDataLogging();
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-           base.OnModelCreating(modelBuilder);
-           modelBuilder.ApplyConfiguration(new BookConfiguration());
-        }
     }
 }

@@ -8,23 +8,12 @@ namespace ExaminationSystem.Configurations
     {
         public void Configure(EntityTypeBuilder<Question> builder)
         {
-            builder.HasKey(q => q.ID);
-
             builder.Property(q => q.Text)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(500);
 
-            builder.HasOne(q => q.CorrectAnswer)
-                .WithOne(ca => ca.Question)
-                .HasForeignKey<Question>(q => q.CorrectAnswerID);
-
-            builder.HasMany(q => q.Choices)
-                .WithOne(c => c.Question)
-                .HasForeignKey(c => c.QuestionID);
-
-            builder.HasMany(q => q.ExamQuestions)
-                .WithOne(eq => eq.Question)
-                .HasForeignKey(eq => eq.QuestionID);
+            builder.Property(q => q.Grade)
+               .IsRequired();
         }
     }
 }

@@ -10,10 +10,6 @@ namespace ExaminationSystem.Models
         public int Grade { get; set; }
         public DifficultyLevel Difficulty { get; set; }
 
-        [ForeignKey("CorrectAnswer")]
-        public int CorrectAnswerID { get; set; }
-        public Choice CorrectAnswer { get; set; }
-
         public HashSet<Choice> Choices { get; set; }
         public HashSet<ExamQuestion> ExamQuestions { get; set; }
     }

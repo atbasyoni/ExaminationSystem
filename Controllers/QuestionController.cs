@@ -21,16 +21,16 @@ namespace ExaminationSystem.Controllers
         //        .ToList();
         //}
 
-        [HttpGet]
-        public Question GetByID(int id)
-        {
-            Context context = new Context();
+        //[HttpGet]
+        //public Question GetByID(int id)
+        //{
+        //    //Context context = new Context();
 
-            Question qst = context.Questions.Where(x => x.ID == id)
-                .Include(q => q.Choices)
-                .FirstOrDefault();
+        //    //Question qst = context.Questions.Where(x => x.ID == id)
+        //    //    .Include(q => q.Choices)
+        //    //    .FirstOrDefault();
 
-            return qst;
-        }
+        //    //return qst;
+        //}
     }
 }

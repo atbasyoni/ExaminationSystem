@@ -1,4 +1,4 @@
-﻿using ExaminationSystem.Models.Students;
+﻿using ExaminationSystem.Models;
 
 namespace ExaminationSystem.Models
 {

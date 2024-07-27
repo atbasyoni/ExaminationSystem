@@ -24,9 +24,11 @@ namespace ExaminationSystem.Services.Exams
             repository.SaveChanges();
         }
 
-        public void AddRange(int examID, IEnumerable<int> QIDs)
+        public void AddRange(Exam exam, IEnumerable<int> QuestionIDs)
         {
-            foreach (int id in QIDs)
+            int examID = exam.ID;
+
+            foreach (int id in QuestionIDs)
             {
                 repository.Add(new ExamQuestion
                 {

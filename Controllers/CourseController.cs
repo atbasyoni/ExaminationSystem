@@ -21,18 +21,22 @@ namespace ExaminationSystem.Controllers
         //        .ToList();
         //}
 
-        [HttpGet]
-        public Course GetByID(int id)
-        {
-            Context context = new Context();
+        //[HttpGet]
+        //public Course GetByID(int id)
+        //{
+        //    Context context = new Context();
 
-            Course qst = context.Courses.Where(x => x.ID == id)
-                .Include(c => c.Instructor)
-                .Include(c => c.Exams)
-                .ThenInclude(ex => ex.ExamQuestions)
-                .FirstOrDefault();
+            
+        //    Course qst = context.Courses.Where(x => x.ID == id)
+        //        .Include(c => c.Instructor)
+        //        .Include(c => c.Exams)
+        //        .ThenInclude(ex => ex.ExamQuestions)
+        //        .FirstOrDefault();
+            
 
-            return qst;
-        }
+        //    Course qst = context.Courses.Where(x => x.ID == id).FirstOrDefault();
+
+        //    return qst;
+        //}
     }
 }

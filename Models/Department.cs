@@ -8,11 +8,6 @@ namespace ExaminationSystem.Models
         public string Code { get; set; }
         public string Description { get; set; }
 
-
-        [ForeignKey("HeadOfDepartment")]
-        public int InstructorID { get; set; }
-        public Instructor HeadOfDepartment { get; set; }
-        
         public List<Course> Courses { get; set; }
         public List<Instructor> Instructors { get; set; }
         public List<Student> Students { get; set; }

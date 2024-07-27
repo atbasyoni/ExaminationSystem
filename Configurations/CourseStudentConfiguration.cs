@@ -8,15 +8,15 @@ namespace ExaminationSystem.Configurations
     {
         public void Configure(EntityTypeBuilder<CourseStudent> builder)
         {
-            builder.HasKey(cs => cs.ID);
+            //builder.HasOne(cs => cs.Course)
+            //    .WithMany(c => c.CourseStudents)
+            //    .HasForeignKey(cs => cs.CourseID)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(cs => cs.Course)
-                .WithMany(c => c.CourseStudents)
-                .HasForeignKey(cs => cs.CourseID);
-
-            builder.HasOne(cs => cs.Student)
-                .WithMany(s => s.CourseStudents)
-                .HasForeignKey(cs => cs.StudentID);
+            //builder.HasOne(cs => cs.Student)
+            //    .WithMany(s => s.CourseStudents)
+            //    .HasForeignKey(cs => cs.StudentID)
+            //    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

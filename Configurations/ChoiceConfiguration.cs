@@ -8,7 +8,9 @@ namespace ExaminationSystem.Configurations
     {
         public void Configure(EntityTypeBuilder<Choice> builder)
         {
-
+            builder.Property(c => c.Text)
+                .IsRequired()
+                .HasMaxLength(200);
         }
     }
 }

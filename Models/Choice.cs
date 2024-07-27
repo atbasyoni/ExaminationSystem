@@ -6,7 +6,6 @@ namespace ExaminationSystem.Models
     {
         public string Text { get; set; }
         public bool IsCorrect { get; set; }
-        public int Points { get; set; }
 
         public int QuestionID { get; set; }
         public  Question Question { get; set; }

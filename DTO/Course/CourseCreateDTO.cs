@@ -10,5 +10,8 @@
         public DateTime EndDate { get; set; }
 
         public int DepartmentID { get; set; }
+
+        public ICollection<int> InstructorIDs { get; set; }
+        public ICollection<int> StudentIDs { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace ExaminationSystem.DTO.Question
     {
         public string Text { get; set; }
         public int Grade { get; set; }
-        public DifficultyLevel Difficulty { get; set; }
+        public string Difficulty { get; set; }
 
-        public List<ChoiceDTO> Choics { get; set; }
+        public ICollection<int> ChoiceIds { get; set; }
     }
 }

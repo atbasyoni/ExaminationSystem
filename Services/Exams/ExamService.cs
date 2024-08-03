@@ -1,50 +1,54 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using ExaminationSystem.Data;
 using ExaminationSystem.DTO.Exam;
 using ExaminationSystem.Helpers;
 using ExaminationSystem.Models;
 using ExaminationSystem.Repositories;
-using ExaminationSystem.ViewModels.Exam;
-using System.Linq;
 
 namespace ExaminationSystem.Services.Exams
 {
     public class ExamService : IExamService
     {
-        private readonly IRepository<Exam> examRepository;
-        private readonly IExamQuestionService examQuestionService;
+        IRepository<Exam> _examRepository;
+        IExamQuestionService _examQuestionService;
+        IMapper _mapper;
 
-        public ExamService(IRepository<Exam> examRepository, IExamQuestionService examQuestionService)
+        public ExamService(IRepository<Exam> examRepository, IExamQuestionService examQuestionService, IMapper mapper)
         {
-            this.examRepository = examRepository;
-            this.examQuestionService = examQuestionService;
+            _examRepository = examRepository;
+            _examQuestionService = examQuestionService;
+            _mapper = mapper;
         }
 
         public int Add(ExamCreateDTO examDTO)
         {
-            var exam = examRepository.Add(new Exam
-            {
-                StartDate = examDTO.StartDate,
-            });
+            var exam = examDTO.MapOne<Exam>();
 
-            examRepository.SaveChanges();
+            exam = _examRepository.Add(exam);
 
-            examQuestionService.AddRange(exam, examDTO.QuestionsIDs);
+            _examQuestionService.AddRange(exam.Id, examDTO.QuestionsIDs);
 
-            return exam.ID;
+            return exam.Id;
+        }
+
+        public void Delete(int id)
+        {
+            var exam = _examRepository.GetByID(id);
+             _examRepository.Delete(exam);
         }
 
         public IEnumerable<ExamDTO> GetAll()
         {
-            var exams = examRepository.GetAll();
-            return exams.Map<ExamDTO>();
+            return _examRepository.GetAll().ToList().AsQueryable().Map<ExamDTO>();
         }
 
         public ExamDTO GetByID(int examID)
         {
-            var exam = examRepository.GetByID(examID);
-            return exam.MapOne<ExamDTO>();
+            return _examRepository.GetByID(examID).MapOne<ExamDTO>();
+        }
+
+        public void Update(ExamDTO examDTO)
+        {
+            throw new NotImplementedException();
         }
     }
 }

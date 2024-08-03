@@ -6,6 +6,6 @@ namespace ExaminationSystem.Services.Exams
     public interface IExamQuestionService
     {
         void Add(ExamQuestionCreateViewModel viewModel);
-        void AddRange(Exam exam, IEnumerable<int> QuestionIDs);
+        void AddRange(int examId, IEnumerable<int> QuestionIDs);
     }
 }

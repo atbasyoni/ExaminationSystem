@@ -1,15 +1,17 @@
 ﻿using ExaminationSystem.Configurations;
 using ExaminationSystem.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace ExaminationSystem.Data
 {
-    public class Context : DbContext
+    public class Context : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public Context(DbContextOptions<Context> options) : base(options)
         {
-            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,17 +26,29 @@ namespace ExaminationSystem.Data
                 }
             }
 
-           modelBuilder.ApplyConfiguration(new AddressConfiguration());
-           modelBuilder.ApplyConfiguration(new ChoiceConfiguration());
-           modelBuilder.ApplyConfiguration(new CourseConfiguration());
-           modelBuilder.ApplyConfiguration(new CourseInstructorConfiguration());
-           modelBuilder.ApplyConfiguration(new CourseStudentConfiguration());
-           modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
-           modelBuilder.ApplyConfiguration(new ExamConfiguration());
-           modelBuilder.ApplyConfiguration(new ExamQuestionConfiguration());
-           modelBuilder.ApplyConfiguration(new InstructorConfiguration());
-           modelBuilder.ApplyConfiguration(new QuestionConfiguration());
-           modelBuilder.ApplyConfiguration(new StudentConfiguration());
+            modelBuilder.Entity<IdentityRole<int>>().ToTable("Roles");
+            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
+            modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
+            modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");
+            modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
+            modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
+            modelBuilder.Entity<User>().ToTable("Users")
+                .HasDiscriminator<string>("UserType")
+                .HasValue<Student>("Student")
+                .HasValue<Instructor>("Instructor");
+
+
+            modelBuilder.ApplyConfiguration(new AddressConfiguration());
+            modelBuilder.ApplyConfiguration(new ChoiceConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseInstructorConfiguration());
+            modelBuilder.ApplyConfiguration(new CourseStudentConfiguration());
+            modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
+            modelBuilder.ApplyConfiguration(new ExamConfiguration());
+            modelBuilder.ApplyConfiguration(new ExamQuestionConfiguration());
+            modelBuilder.ApplyConfiguration(new InstructorConfiguration());
+            modelBuilder.ApplyConfiguration(new QuestionConfiguration());
+            modelBuilder.ApplyConfiguration(new StudentConfiguration());
         }
 
         public DbSet<Address> Addresses { get; set; }

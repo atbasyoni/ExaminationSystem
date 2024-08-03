@@ -8,5 +8,7 @@ namespace ExaminationSystem.Services.Exams
         int Add(ExamCreateDTO examDTO);
         IEnumerable<ExamDTO> GetAll();
         ExamDTO GetByID(int examID);
+        void Update(ExamDTO examDTO);
+        void Delete(int id);
     }
 }

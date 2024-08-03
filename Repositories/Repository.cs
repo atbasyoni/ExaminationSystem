@@ -20,6 +20,12 @@ namespace ExaminationSystem.Repositories
             return entity;
         }
 
+        public IEnumerable<T> AddRange(IEnumerable<T> entities)
+        {
+            _context.Set<T>().AddRange(entities);
+            return entities;
+        }
+
         public void Update(T entity)
         {
             _context.Set<T>().Update(entity);
@@ -31,9 +37,20 @@ namespace ExaminationSystem.Repositories
             Update(entity);
         }
 
-        public IQueryable<T> Get(Expression<Func<T, bool>> predicate, Expression<Func<T, T>> selector = null)
+        public void DeleteRange(IEnumerable<T> entities)
         {
-            return GetAll().Where(predicate).Select(selector);
+            foreach (var entity in entities)
+            {
+                entity.IsDeleted = true;
+            }
+
+            _context.Set<T>().UpdateRange(entities);
+        }
+
+
+        public IQueryable<T> Get(Expression<Func<T, bool>> predicate)
+        {
+            return GetAll().Where(predicate);
         }
 
         public IQueryable<T> GetAll()
@@ -43,7 +60,26 @@ namespace ExaminationSystem.Repositories
 
         public T GetByID(int id)
         {
-            return GetAll().FirstOrDefault(x => x.ID == id);
+            return GetAll().FirstOrDefault(x => x.Id == id);
+        }
+
+        public T Find(Expression<Func<T, bool>> criteria, string[] includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            return query.SingleOrDefault(criteria);
+        }
+
+        public T GetWithTrackinByID(int id)
+        {
+            return _context.Set<T>()
+                .Where(x => !x.IsDeleted && x.Id == id)
+                .AsTracking()
+                .FirstOrDefault();
         }
 
         public void SaveChanges()

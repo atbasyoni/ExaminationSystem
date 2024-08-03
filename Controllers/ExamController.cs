@@ -1,82 +1,78 @@
-﻿using ExaminationSystem.Data;
-using ExaminationSystem.Models;
-using ExaminationSystem.Repositories;
-using ExaminationSystem.ViewModels.Instructors;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ExaminationSystem.DTO.Exam;
+using ExaminationSystem.Helpers;
+using ExaminationSystem.Services.Exams;
+using ExaminationSystem.ViewModels;
+using ExaminationSystem.ViewModels.Exam;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Xml;
 
 namespace ExaminationSystem.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class InstructorController : ControllerBase
+    public class ExamController : ControllerBase
     {
-        //[HttpGet]
-        //public IEnumerable<InstructorViewModel> GetAll()
-        //{
-        //    IRepository<Instructor> instructorRepository = new Repository<Instructor>();
+        private readonly IMapper _mapper;
+        private readonly IExamService _examService;
 
-        //    //IEnumerable<Instructor> instructors = instructorRepository.GetAll();
+        public ExamController(IMapper mapper, IExamService examService)
+        {
+            _mapper = mapper;
+            _examService = examService;
+        }
 
-        //    IEnumerable<InstructorViewModel> result =
-        //        instructorRepository.Get(x => x.ID < 100)
-        //        .ToViewModels();
+        [HttpGet]
+        public ResultViewModel<IEnumerable<ExamViewModel>> GetAllExams()
+        {
+            var exams = _examService.GetAll().AsQueryable().ProjectTo<ExamViewModel>(_mapper.ConfigurationProvider);
 
-        //IEnumerable<InstructorViewModel> result =
-        //    instructorRepository.Get<InstructorViewModel>(x => x.ID < 100,
-        //    x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName });
+            return new ResultViewModel<IEnumerable<ExamViewModel>>
+            {
+                IsSuccess = true,
+                Data = exams,
+            };
+        }
 
-        //    //instructors = instructors.Where(x => x.ID < 100);
+        [HttpGet("{id}")]
+        public ResultViewModel<ExamViewModel> GetExamByID(int id)
+        {
+            var exam = _examService.GetByID(id).MapOne<ExamViewModel>();
 
-        //    //IEnumerable<InstructorViewModel> result =
-        //    //    instructors.Select(x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName });
+            return new ResultViewModel<ExamViewModel>
+            {
+                IsSuccess = true,
+                Data = exam,
+            };
+        }
 
-        //    //foreach (var item in result)
-        //    //{
-        //    //    Debug.WriteLine(item.FullName);
-        //    //}
+        [HttpPost]
+        public ResultViewModel<int> CreateExam(ExamCreateViewModel ExamVM)
+        {
+            var examCreateDTO = ExamVM.MapOne<ExamCreateDTO>();
+            int examId = _examService.Add(examCreateDTO);
+            
+            return new ResultViewModel<int>
+            {
+                IsSuccess = true,
+                Data = examId,
+            };
+        }
 
-        //    return result;
+        [HttpPut]
+        public IActionResult EditExam(ExamViewModel examVM)
+        {
+            var examDTO = examVM.MapOne<ExamDTO>();
+            _examService.Update(examDTO);
 
+            return Ok();
+        }
 
-        //    //List<InstructorViewModel> result = new List<InstructorViewModel>();
-
-        //    //foreach (var item in query)
-        //    //{
-        //    //    Debug.WriteLine(item.FullName);
-        //    //    result.Add(item);
-        //    //}
-
-        //    //return result;
-        //}
-
-        //[HttpGet]
-        //public InstructorViewModel GetByID(int id)
-        //{
-        //    IRepository<Instructor> instructorRepository = new Repository<Instructor>();
-
-        //    var instructor = instructorRepository.GetByID(id);
-
-        //    return instructor.ToViewModel();
-        //}
-
-        //[HttpPut]
-        //public bool Update(InstructorCreateViewModel viewModel)
-        //{
-        //    IRepository<Instructor> repository = new Repository<Instructor>();
-
-        //    var instructor = repository.GetWithTrackinByID(viewModel.ID);
-
-        //    instructor.FirstName = viewModel.FName;
-        //    instructor.LastName = viewModel.LName;
-
-        //    //repository.Update(instructor);
-        //    repository.SaveChanges();
-
-        //    return true;
-        //}
-
+        [HttpDelete]
+        public IActionResult DeleteExam(int id)
+        {
+            _examService.Delete(id);
+            return Ok();
+        }
     }
 }

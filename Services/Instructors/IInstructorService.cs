@@ -5,7 +5,7 @@ namespace ExaminationSystem.Services.Instructors
 {
     public interface IInstructorService
     {
-        int Add(InstructorCreateDTO instructorDTO);
+        void Add(InstructorCreateDTO instructorDTO);
         IEnumerable<InstructorDTO> GetAll();
         InstructorDTO GetByID(int id);
         void Update(InstructorDTO instructorDTO);

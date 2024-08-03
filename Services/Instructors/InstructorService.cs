@@ -8,33 +8,23 @@ namespace ExaminationSystem.Services.Instructors
 {
     public class InstructorService : IInstructorService
     {
-        private readonly IRepository<Instructor> instructorRepository;
-        private readonly IRepository<Department> departmentRepository;
+        private readonly IUserRepository<Instructor> instructorRepository;
 
-        public InstructorService(IRepository<Instructor> instructorRepository, IRepository<Department> departmentRepository)
+        public InstructorService(IUserRepository<Instructor> instructorRepository)
         {
             this.instructorRepository = instructorRepository;
-            this.departmentRepository = departmentRepository;
         }
 
-        public int Add(InstructorCreateDTO instructorDTO)
+        public void Add(InstructorCreateDTO instructorDTO)
         {
             var instructor = instructorDTO.MapOne<Instructor>();
             instructorRepository.Add(instructor);
-            instructorRepository.SaveChanges();
-
-            var department = departmentRepository.GetByID(instructorDTO.DepartmentID);
-            department.Instructors.Add(instructor);
-            departmentRepository.SaveChanges();
-
-            return instructor.ID;
         }
 
         public void Delete(int id)
         {
             var instructor = instructorRepository.GetByID(id);
             instructorRepository.Delete(instructor);
-            instructorRepository.SaveChanges();
         }
 
         public IEnumerable<InstructorDTO> GetAll()
@@ -51,7 +41,6 @@ namespace ExaminationSystem.Services.Instructors
         {
             var instructor = instructorDTO.MapOne<Instructor>();
             instructorRepository.Update(instructor);
-            instructorRepository.SaveChanges();
         }
     }
 }

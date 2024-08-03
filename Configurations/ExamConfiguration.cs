@@ -15,11 +15,6 @@ namespace ExaminationSystem.Configurations
             builder.Property(e => e.Description)
             .IsRequired()
             .HasMaxLength(500);
-
-            //builder.HasOne(e => e.Instructor)
-            //    .WithMany(i => i.Exams)
-            //    .HasForeignKey(e => e.InstructorID)
-            //    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

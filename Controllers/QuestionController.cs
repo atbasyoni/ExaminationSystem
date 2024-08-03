@@ -1,36 +1,54 @@
-﻿using ExaminationSystem.Data;
-using ExaminationSystem.Models;
+﻿using AutoMapper;
+using ExaminationSystem.DTO.Question;
+using ExaminationSystem.Helpers;
+using ExaminationSystem.Services.Questions;
 using ExaminationSystem.ViewModels;
+using ExaminationSystem.ViewModels.Exam;
+using ExaminationSystem.ViewModels.Question;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Xml;
 
-namespace ExaminationSystem.Controllers
+namespace QuestioninationSystem.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
     public class QuestionController : ControllerBase
     {
-        //[HttpGet]
-        //public IEnumerable<InstructorViewModel> GetAll()
-        //{
-        //    Context context = new Context();
+        private readonly IMapper _mapper;
+        private readonly IQuestionService _questionService;
 
-        //    return context.Instructors
-        //        .Select(x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName})
-        //        .ToList();
-        //}
+        public QuestionController(IMapper mapper, IQuestionService questionService)
+        {
+            _mapper = mapper;
+            _questionService = questionService;
+        }
 
-        //[HttpGet]
-        //public Question GetByID(int id)
-        //{
-        //    //Context context = new Context();
+        [HttpPost]
+        public ResultViewModel<int> CreateQuestion(QuestionCreateViewModel questionVM)
+        {
+            var questionCreateDTO = questionVM.MapOne<QuestionCreateDTO>();
+            int questionId = _questionService.Add(questionCreateDTO);
 
-        //    //Question qst = context.Questions.Where(x => x.ID == id)
-        //    //    .Include(q => q.Choices)
-        //    //    .FirstOrDefault();
+            return new ResultViewModel<int>
+            {
+                IsSuccess = true,
+                Data = questionId,
+            };
+        }
 
-        //    //return qst;
-        //}
+        [HttpPut]
+        public IActionResult EditQuestion(QuestionViewModel questionVM)
+        {
+            var questionDTO = questionVM.MapOne<QuestionDTO>();
+            _questionService.Update(questionDTO);
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteQuestion(int id)
+        {
+            _questionService.Delete(id);
+            return Ok();
+        }
     }
 }

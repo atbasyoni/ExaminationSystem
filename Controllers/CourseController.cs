@@ -1,9 +1,10 @@
-﻿using ExaminationSystem.Data;
-using ExaminationSystem.Models;
-using ExaminationSystem.ViewModels;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using ExaminationSystem.DTO.Course;
+using ExaminationSystem.Helpers;
+using ExaminationSystem.Services.Courses;
+using ExaminationSystem.ViewModels.Course;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Xml;
 
 namespace ExaminationSystem.Controllers
 {
@@ -11,32 +12,51 @@ namespace ExaminationSystem.Controllers
     [Route("[controller]/[action]")]
     public class CourseController : ControllerBase
     {
-        //[HttpGet]
-        //public IEnumerable<InstructorViewModel> GetAll()
-        //{
-        //    Context context = new Context();
+        private readonly IMapper _mapper;
+        private readonly ICourseService _courseService;
 
-        //    return context.Instructors
-        //        .Select(x => new InstructorViewModel { FName = x.FirstName, LName = x.LastName})
-        //        .ToList();
-        //}
+        public CourseController(IMapper mapper, ICourseService courseService)
+        {
+            _mapper = mapper;
+            _courseService = courseService;
+        }
 
-        //[HttpGet]
-        //public Course GetByID(int id)
-        //{
-        //    Context context = new Context();
+        [HttpGet]
+        public ActionResult<IEnumerable<CourseViewModel>> GetAllCourses()
+        {
+            var courses = _courseService.GetAll();
+            return Ok(courses.AsQueryable().ProjectTo<CourseViewModel>(_mapper.ConfigurationProvider));
+        }
 
-            
-        //    Course qst = context.Courses.Where(x => x.ID == id)
-        //        .Include(c => c.Instructor)
-        //        .Include(c => c.Exams)
-        //        .ThenInclude(ex => ex.ExamQuestions)
-        //        .FirstOrDefault();
-            
+        [HttpGet("{id}")]
+        public ActionResult<CourseViewModel> GetCourseByID(int id)
+        {
+            var course = _courseService.GetByID(id);
+            return Ok(course.MapOne<CourseViewModel>());
+        }
 
-        //    Course qst = context.Courses.Where(x => x.ID == id).FirstOrDefault();
+        [HttpPost]
+        public IActionResult CreateCourse(CourseCreateViewModel courseVM)
+        {
+            var courseDTO = courseVM.MapOne<CourseCreateDTO>();
+            _courseService.Add(courseDTO);
+            return NoContent();
+        }
 
-        //    return qst;
-        //}
+        [HttpPut]
+        public IActionResult EditCourse(CourseViewModel courseVM)
+        {
+            var courseDTO = courseVM.MapOne<CourseDTO>();
+            _courseService.Update(courseDTO);
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        public IActionResult DeleteCourse(int id) 
+        {
+            _courseService.Delete(id);
+            return NoContent();
+        }
     }
 }

@@ -2,21 +2,17 @@
 using ExaminationSystem.DTO.Exam;
 using ExaminationSystem.Helpers;
 using ExaminationSystem.Models;
-using ExaminationSystem.Repositories;
+using ExaminationSystem.Repositories.Bases;
 
 namespace ExaminationSystem.Services.Exams
 {
     public class ExamService : IExamService
     {
         IRepository<Exam> _examRepository;
-        IExamQuestionService _examQuestionService;
-        IMapper _mapper;
 
-        public ExamService(IRepository<Exam> examRepository, IExamQuestionService examQuestionService, IMapper mapper)
+        public ExamService(IRepository<Exam> examRepository)
         {
             _examRepository = examRepository;
-            _examQuestionService = examQuestionService;
-            _mapper = mapper;
         }
 
         public int Add(ExamCreateDTO examDTO)
@@ -24,8 +20,7 @@ namespace ExaminationSystem.Services.Exams
             var exam = examDTO.MapOne<Exam>();
 
             exam = _examRepository.Add(exam);
-
-            _examQuestionService.AddRange(exam.Id, examDTO.QuestionsIDs);
+            _examRepository.SaveChanges();
 
             return exam.Id;
         }
@@ -34,6 +29,7 @@ namespace ExaminationSystem.Services.Exams
         {
             var exam = _examRepository.GetByID(id);
              _examRepository.Delete(exam);
+            _examRepository.SaveChanges();
         }
 
         public IEnumerable<ExamDTO> GetAll()
@@ -48,7 +44,13 @@ namespace ExaminationSystem.Services.Exams
 
         public void Update(ExamDTO examDTO)
         {
-            throw new NotImplementedException();
+            var exam = examDTO.MapOne<Exam>();
+
+            if (exam != null)
+            {
+                _examRepository.Update(exam);
+                _examRepository.SaveChanges();
+            }
         }
     }
 }

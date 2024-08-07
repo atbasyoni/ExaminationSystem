@@ -1,4 +1,5 @@
-﻿using ExaminationSystem.Enums;
+﻿using ExaminationSystem.DTO.Choice;
+using ExaminationSystem.Enums;
 using ExaminationSystem.Models;
 
 namespace ExaminationSystem.DTO.Question
@@ -10,6 +11,6 @@ namespace ExaminationSystem.DTO.Question
         public int Grade { get; set; }
         public string Difficulty { get; set; }
 
-        public ICollection<int> ChoiceIds { get; set; }
+        public List<ChoiceDTO> ChoiceDTOs { get; set; }
     }
 }

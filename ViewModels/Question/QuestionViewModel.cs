@@ -1,4 +1,7 @@
-﻿namespace ExaminationSystem.ViewModels.Question
+﻿using ExaminationSystem.DTO.Choice;
+using ExaminationSystem.Enums;
+
+namespace ExaminationSystem.ViewModels.Question
 {
     public class QuestionViewModel
     {
@@ -7,6 +10,6 @@
         public int Grade { get; set; }
         public string Difficulty { get; set; }
 
-        public ICollection<int> ChoiceIds { get; set; }
+        public List<ChoiceDTO> ChoiceDTOs { get; set; }
     }
 }

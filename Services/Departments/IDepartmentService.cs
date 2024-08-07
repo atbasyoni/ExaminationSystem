@@ -5,7 +5,7 @@ namespace ExaminationSystem.Services.Departments
 {
     public interface IDepartmentService
     {
-        DepartmentDTO Add(DepartmentCreateDTO departmentDTO);
+        int Add(DepartmentCreateDTO departmentDTO);
         IEnumerable<DepartmentDTO> GetAll();
         DepartmentDTO GetByID(int id);
         void Update(DepartmentDTO departmentDTO);

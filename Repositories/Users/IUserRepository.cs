@@ -1,7 +1,7 @@
 ﻿using ExaminationSystem.Models;
 using System.Linq.Expressions;
 
-namespace ExaminationSystem.Repositories
+namespace ExaminationSystem.Repositories.Users
 {
     public interface IUserRepository<T> where T : User
     {
@@ -12,5 +12,6 @@ namespace ExaminationSystem.Repositories
         void Update(T entity);
         void Delete(T entity);
         void DeleteRange(IEnumerable<T> entities);
+        void SaveChanges();
     }
 }

@@ -2,37 +2,32 @@
 using ExaminationSystem.DTO.Choice;
 using ExaminationSystem.Helpers;
 using ExaminationSystem.Models;
-using ExaminationSystem.Repositories;
+using ExaminationSystem.Repositories.Bases;
 
 namespace ExaminationSystem.Services.Choices
 {
     public class ChoiceService : IChoiceService
     {
         private readonly IRepository<Choice> _choiceRepository;
-        private readonly IRepository<Question> _questionRepository;
 
-        public ChoiceService(IRepository<Choice> choiceRepository, IRepository<Question> questionRepository)
+        public ChoiceService(IRepository<Choice> choiceRepository)
         {
             _choiceRepository = choiceRepository;
-            _questionRepository = questionRepository;
         }
 
         public int Add(ChoiceCreateDTO choiceDTO)
         {
             var choice = choiceDTO.MapOne<Choice>();
-
             choice = _choiceRepository.Add(choice);
 
-            var question = _questionRepository.GetWithTrackinByID(choice.QuestionID);
-            question.Choices.Add(choice);
-            _questionRepository.Update(question);
+            _choiceRepository.SaveChanges();
 
             return choice.Id;
         }
 
-        public void AddRange(int questionID, List<ChoiceDTO> choices)
+        public void AddRange(int questionID, List<ChoiceCreateDTO> choices)
         {
-            foreach (ChoiceDTO choice in choices)
+            foreach (ChoiceCreateDTO choice in choices)
             {
                 _choiceRepository.Add(
                     new Choice
@@ -43,12 +38,21 @@ namespace ExaminationSystem.Services.Choices
                     }
                 );
             }
+
+            _choiceRepository.SaveChanges();
         }
 
         public void Delete(int id)
         {
             var choice = _choiceRepository.GetByID(id);
             _choiceRepository.Delete(choice);
+            _choiceRepository.SaveChanges();
+        }
+        
+        public void DeleteRange(IEnumerable<Choice> choices)
+        {
+            _choiceRepository.DeleteRange(choices);
+            _choiceRepository.SaveChanges();
         }
 
         public IEnumerable<ChoiceDTO> GetAll()
@@ -64,8 +68,8 @@ namespace ExaminationSystem.Services.Choices
         public void Update(ChoiceDTO choiceDTO)
         {
             var choice = _choiceRepository.GetWithTrackinByID(choiceDTO.Id);
-
             _choiceRepository.Update(choice);
+            _choiceRepository.SaveChanges();
         }
     }
 }

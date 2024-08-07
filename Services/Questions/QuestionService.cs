@@ -1,7 +1,7 @@
 ﻿using ExaminationSystem.DTO.Question;
 using ExaminationSystem.Helpers;
 using ExaminationSystem.Models;
-using ExaminationSystem.Repositories;
+using ExaminationSystem.Repositories.Bases;
 
 namespace ExaminationSystem.Services.Questions
 {
@@ -19,14 +19,16 @@ namespace ExaminationSystem.Services.Questions
             var question = questionCreateDTO.MapOne<Question>();
             
             question = _questionRepository.Add(question);
+            _questionRepository.SaveChanges();
 
             return question.Id;
         }
 
         public void Delete(int id)
         {
-            var question = _questionRepository.GetByID(id);
+            var question = _questionRepository.GetWithTrackinByID(id);
             _questionRepository.Delete(question);
+            _questionRepository.SaveChanges();
         }
 
         public QuestionDTO GetByID(int id)
@@ -39,6 +41,7 @@ namespace ExaminationSystem.Services.Questions
         {
             var question = questionDTO.MapOne<Question>();
             _questionRepository.Update(question);
+            _questionRepository.SaveChanges();
         }
     }
 }

@@ -3,7 +3,7 @@ using ExaminationSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace ExaminationSystem.Repositories
+namespace ExaminationSystem.Repositories.Bases
 {
     public class Repository<T> : IRepository<T> where T : BaseModel
     {

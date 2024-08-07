@@ -1,45 +1,26 @@
-﻿using AutoMapper;
-using ExaminationSystem.DTO.Course;
+﻿using ExaminationSystem.DTO.Course;
 using ExaminationSystem.Helpers;
 using ExaminationSystem.Models;
-using ExaminationSystem.Repositories;
+using ExaminationSystem.Repositories.Bases;
 
 namespace ExaminationSystem.Services.Courses
 {
     public class CourseService : ICourseService
     {
         private readonly IRepository<Course> _courseRepository;
-        private readonly IRepository<Department> _departmentRepository;
-        private readonly IRepository<CourseInstructor> _courseInstructorRepository;
-        private readonly IRepository<CourseStudent> _courseStudentRepository;
-        private readonly IRepository<Exam> _examRepository;
 
-        public CourseService(IRepository<Course> courseRepository, 
-            IRepository<Department> departmentRepository, 
-            IRepository<CourseInstructor> courseInstructorRepository, 
-            IRepository<CourseStudent> courseStudentRepository, 
-            IRepository<Exam> examRepository)
+        public CourseService(IRepository<Course> courseRepository)
         {
             _courseRepository = courseRepository;
-            _departmentRepository = departmentRepository;
-            _courseInstructorRepository = courseInstructorRepository;
-            _courseStudentRepository = courseStudentRepository;
-            _examRepository = examRepository;
         }
 
-        public CourseDTO Add(CourseCreateDTO courseDTO)
+        public int Add(CourseCreateDTO courseDTO)
         {
             var course = courseDTO.MapOne<Course>();
-
             _courseRepository.Add(course);
-            
-            var department = _departmentRepository.Find(d => d.Id == courseDTO.DepartmentID, ["Courses"]);
+            _courseRepository.SaveChanges();
 
-            department.Courses.Add(course);
-
-            _departmentRepository.Update(department);
-
-            return course.MapOne<CourseDTO>();
+            return course.Id;
         }
 
         public void Delete(int id)
@@ -48,36 +29,8 @@ namespace ExaminationSystem.Services.Courses
 
             if (course != null)
             {
-
-                var department = _departmentRepository.GetByID(course.DepartmentID);
-
-                if (department != null)
-                {
-                    department.Courses.Remove(course);
-                    _departmentRepository.Update(department);
-                }
-
-                var courseInstructors = _courseInstructorRepository.Get(ci => ci.CourseID == id).ToList();
-                
-                if(courseInstructors != null)
-                {
-                    _courseInstructorRepository.DeleteRange(courseInstructors);
-                }
-
-                var courseStudents = _courseStudentRepository.Get(ci => ci.CourseID == id).ToList();
-                
-                if (courseStudents != null)
-                {
-                _courseStudentRepository.DeleteRange(courseStudents);
-                }
-
-                var exams = _examRepository.Get(e => e.CourseID == id).ToList();
-                if(exams != null)
-                {
-                    _examRepository.DeleteRange(exams);
-                }
-                
                 _courseRepository.Delete(course);
+                _courseRepository.SaveChanges();
             }
         }
 
@@ -99,6 +52,7 @@ namespace ExaminationSystem.Services.Courses
 
             course = courseDTO.MapOne<Course>();
             _courseRepository.Update(course);
+            _courseRepository.SaveChanges();
         }
     }
 }

@@ -4,7 +4,7 @@ namespace ExaminationSystem.Services.Courses
 {
     public interface ICourseService
     {
-        CourseDTO Add(CourseCreateDTO courseDTO);
+        int Add(CourseCreateDTO courseDTO);
         IEnumerable<CourseDTO> GetAll();
         CourseDTO GetByID(int id);
         void Update(CourseDTO courseDTO);

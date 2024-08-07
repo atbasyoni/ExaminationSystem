@@ -1,8 +1,9 @@
 ﻿using ExaminationSystem.Data;
 using ExaminationSystem.Models;
+using ExaminationSystem.Repositories.Users;
 using System.Linq.Expressions;
 
-namespace ExaminationSystem.Repositories
+namespace ExaminationSystem.Repositories.Users
 {
     public class UserRepository<T> : IUserRepository<T> where T : User
     {
@@ -54,6 +55,11 @@ namespace ExaminationSystem.Repositories
         public T GetByID(int id)
         {
             return GetAll().FirstOrDefault(x => x.Id == id);
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 }

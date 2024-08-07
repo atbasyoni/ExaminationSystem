@@ -2,7 +2,9 @@
 using AutoMapper.QueryableExtensions;
 using ExaminationSystem.DTO.Course;
 using ExaminationSystem.Helpers;
+using ExaminationSystem.Models;
 using ExaminationSystem.Services.Courses;
+using ExaminationSystem.ViewModels;
 using ExaminationSystem.ViewModels.Course;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,25 +24,40 @@ namespace ExaminationSystem.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CourseViewModel>> GetAllCourses()
+        public ResultViewModel<IEnumerable<CourseViewModel>> GetAllCourses()
         {
-            var courses = _courseService.GetAll();
-            return Ok(courses.AsQueryable().ProjectTo<CourseViewModel>(_mapper.ConfigurationProvider));
+            var courses = _courseService.GetAll().AsQueryable().ProjectTo<CourseViewModel>(_mapper.ConfigurationProvider);
+
+            return new ResultViewModel<IEnumerable<CourseViewModel>>
+            {
+                IsSuccess = true,
+                Data = courses,
+            };
         }
 
         [HttpGet("{id}")]
-        public ActionResult<CourseViewModel> GetCourseByID(int id)
+        public ResultViewModel<CourseViewModel> GetCourseByID(int id)
         {
-            var course = _courseService.GetByID(id);
-            return Ok(course.MapOne<CourseViewModel>());
+            var course = _courseService.GetByID(id).MapOne<CourseViewModel>();
+
+            return new ResultViewModel<CourseViewModel>
+            {
+                IsSuccess = true,
+                Data = course,
+            };
         }
 
         [HttpPost]
-        public IActionResult CreateCourse(CourseCreateViewModel courseVM)
+        public ResultViewModel<int> CreateCourse(CourseCreateViewModel courseVM)
         {
             var courseDTO = courseVM.MapOne<CourseCreateDTO>();
-            _courseService.Add(courseDTO);
-            return NoContent();
+            int courseId = _courseService.Add(courseDTO);
+            
+            return new ResultViewModel<int>
+            {
+                IsSuccess = true,
+                Data = courseId,
+            };
         }
 
         [HttpPut]

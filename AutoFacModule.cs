@@ -2,7 +2,8 @@
 using AutoMapper;
 using ExaminationSystem.Data;
 using ExaminationSystem.Profiles;
-using ExaminationSystem.Repositories;
+using ExaminationSystem.Repositories.Bases;
+using ExaminationSystem.Repositories.Users;
 using ExaminationSystem.Services.Choices;
 using ExaminationSystem.Services.Courses;
 using ExaminationSystem.Services.Departments;
@@ -34,6 +35,7 @@ namespace ExaminationSystem
                 cfg.AddProfile<DepartmentProfile>();
                 cfg.AddProfile<CourseProfile>();
                 cfg.AddProfile<ExamProfile>();
+                cfg.AddProfile<QuestionProfile>();
             }).CreateMapper()).As<IMapper>().InstancePerLifetimeScope();
         }
     }

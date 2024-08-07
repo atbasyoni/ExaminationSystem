@@ -1,46 +1,49 @@
 ﻿using ExaminationSystem.DTO.Instructor;
 using ExaminationSystem.Helpers;
 using ExaminationSystem.Models;
-using ExaminationSystem.Repositories;
+using ExaminationSystem.Repositories.Users;
 using ExaminationSystem.Services.Departments;
 
 namespace ExaminationSystem.Services.Instructors
 {
     public class InstructorService : IInstructorService
     {
-        private readonly IUserRepository<Instructor> instructorRepository;
+        private readonly IUserRepository<Instructor> _instructorRepository;
 
         public InstructorService(IUserRepository<Instructor> instructorRepository)
         {
-            this.instructorRepository = instructorRepository;
+            _instructorRepository = instructorRepository;
         }
 
         public void Add(InstructorCreateDTO instructorDTO)
         {
             var instructor = instructorDTO.MapOne<Instructor>();
-            instructorRepository.Add(instructor);
+            _instructorRepository.Add(instructor);
+            _instructorRepository.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            var instructor = instructorRepository.GetByID(id);
-            instructorRepository.Delete(instructor);
+            var instructor = _instructorRepository.GetByID(id);
+            _instructorRepository.Delete(instructor);
+            _instructorRepository.SaveChanges();
         }
 
         public IEnumerable<InstructorDTO> GetAll()
         {
-            return instructorRepository.GetAll().Map<InstructorDTO>();
+            return _instructorRepository.GetAll().Map<InstructorDTO>();
         }
 
         public InstructorDTO GetByID(int id)
         {
-            return instructorRepository.GetByID(id).MapOne<InstructorDTO>();
+            return _instructorRepository.GetByID(id).MapOne<InstructorDTO>();
         }
 
         public void Update(InstructorDTO instructorDTO)
         {
             var instructor = instructorDTO.MapOne<Instructor>();
-            instructorRepository.Update(instructor);
+            _instructorRepository.Update(instructor);
+            _instructorRepository.SaveChanges();
         }
     }
 }

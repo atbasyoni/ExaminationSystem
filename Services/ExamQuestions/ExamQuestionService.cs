@@ -1,6 +1,6 @@
 ﻿using ExaminationSystem.Data;
 using ExaminationSystem.Models;
-using ExaminationSystem.Repositories;
+using ExaminationSystem.Repositories.Bases;
 using ExaminationSystem.ViewModels.Exam;
 
 namespace ExaminationSystem.Services.Exams
@@ -21,6 +21,8 @@ namespace ExaminationSystem.Services.Exams
                 ExamID = viewModel.ExamID,
                 QuestionID = viewModel.QuestionID,
             });
+
+            _examQuestionRepository.SaveChanges();
         }
 
         public void AddRange(int examId, IEnumerable<int> QuestionIDs)
@@ -33,6 +35,8 @@ namespace ExaminationSystem.Services.Exams
                     QuestionID = Id,
                 });
             }
+
+            _examQuestionRepository.SaveChanges();
         }
     }
 }

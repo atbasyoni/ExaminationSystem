@@ -1,7 +1,7 @@
 ﻿using ExaminationSystem.Models;
 using System.Linq.Expressions;
 
-namespace ExaminationSystem.Repositories
+namespace ExaminationSystem.Repositories.Bases
 {
     public interface IRepository<T> where T : BaseModel
     {

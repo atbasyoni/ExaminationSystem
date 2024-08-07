@@ -1,5 +1,4 @@
-﻿using ExaminationSystem.DTO.Course;
-using ExaminationSystem.DTO.Question;
+﻿using ExaminationSystem.DTO.Question;
 
 namespace ExaminationSystem.Services.Questions
 {

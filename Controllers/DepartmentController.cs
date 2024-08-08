@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using ExaminationSystem.DTO.Department;
+﻿using ExaminationSystem.DTO.Department;
 using ExaminationSystem.Helpers;
-using ExaminationSystem.Services.Departments;
+using ExaminationSystem.Mediators;
 using ExaminationSystem.ViewModels;
 using ExaminationSystem.ViewModels.Department;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +11,17 @@ namespace ExaminationSystem.Controllers
     [ApiController]
     public class DepartmentController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IDepartmentService _departmentService;
+        private readonly IDepartmentMediator _departmentMediator;
 
-        public DepartmentController(IMapper mapper, IDepartmentService departmentService)
+        public DepartmentController(IDepartmentMediator departmentMediator)
         {
-            _mapper = mapper;
-            _departmentService = departmentService;
+            _departmentMediator = departmentMediator;
         }
 
         [HttpGet]
         public ResultViewModel<IEnumerable<DepartmentViewModel>> GetAllDepartments()
         {
-            var departments = _departmentService.GetAll().AsQueryable().ProjectTo<DepartmentViewModel>(_mapper.ConfigurationProvider);
+            var departments = _departmentMediator.GetAll().AsQueryable().Map<DepartmentViewModel>();
 
             return new ResultViewModel<IEnumerable<DepartmentViewModel>>
             {
@@ -37,7 +33,7 @@ namespace ExaminationSystem.Controllers
         [HttpGet("{id}")]
         public ResultViewModel<DepartmentViewModel> GetDepartmentByID(int id)
         {
-            var department = _departmentService.GetByID(id).MapOne<DepartmentViewModel>();
+            var department = _departmentMediator.GetById(id).MapOne<DepartmentViewModel>();
 
             return new ResultViewModel<DepartmentViewModel>
             {
@@ -49,12 +45,13 @@ namespace ExaminationSystem.Controllers
         [HttpPost]
         public ResultViewModel<int> CreateDepartment(DepartmentCreateViewModel departmentVM)
         {
-            var departmentCreateDTO = departmentVM.MapOne<DepartmentCreateDTO>();
-            var departmentDTO =  _departmentService.Add(departmentCreateDTO);
+            var departmentDTO = departmentVM.MapOne<DepartmentCreateDTO>();
+            int departmentId = _departmentMediator.AddDepartment(departmentDTO);
+
             return new ResultViewModel<int>
             {
                 IsSuccess = true,
-                Data =  departmentDTO.Id,
+                Data = departmentId,
             };
         }
 
@@ -62,7 +59,7 @@ namespace ExaminationSystem.Controllers
         public IActionResult EditDepartment(DepartmentViewModel departmentVM)
         {
             var departmentDTO = departmentVM.MapOne<DepartmentDTO>();
-            _departmentService.Update(departmentDTO);
+            _departmentMediator.EditDepartment(departmentDTO);
 
             return Ok();
         }
@@ -70,8 +67,8 @@ namespace ExaminationSystem.Controllers
         [HttpDelete]
         public IActionResult DeleteDepartment(int id)
         {
-            _departmentService.Delete(id);
-            return Ok();
+            _departmentMediator.DeleteDepartment(id);
+            return NoContent();
         }
     }
 }

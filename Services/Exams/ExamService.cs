@@ -34,7 +34,7 @@ namespace ExaminationSystem.Services.Exams
 
         public IEnumerable<ExamDTO> GetAll()
         {
-            return _examRepository.GetAll().ToList().AsQueryable().Map<ExamDTO>();
+            return _examRepository.GetAll().Map<ExamDTO>();
         }
 
         public ExamDTO GetByID(int examID)

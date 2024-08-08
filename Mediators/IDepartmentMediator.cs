@@ -1,13 +1,14 @@
-﻿using ExaminationSystem.ViewModels.Department;
+﻿using ExaminationSystem.DTO.Department;
+using ExaminationSystem.ViewModels.Department;
 
 namespace ExaminationSystem.Mediators
 {
     public interface IDepartmentMediator
     {
-        IEnumerable<DepartmentViewModel> GetAll();
-        DepartmentViewModel GetById(int id);
-        void Add(DepartmentCreateViewModel departmentCreateVM);
-        void Update(DepartmentViewModel departmentVM);
-        void Delete(int id);
+        IEnumerable<DepartmentDTO> GetAll();
+        DepartmentDTO GetById(int id);
+        int AddDepartment(DepartmentCreateDTO departmentDTO);
+        void EditDepartment(DepartmentDTO departmentDTO);
+        void DeleteDepartment(int id);
     }
 }

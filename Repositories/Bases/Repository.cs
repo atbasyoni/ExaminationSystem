@@ -48,7 +48,7 @@ namespace ExaminationSystem.Repositories.Bases
         }
 
 
-        public IQueryable<T> Get(Expression<Func<T, bool>> predicate)
+        public IQueryable<T> GetAll(Expression<Func<T, bool>> predicate)
         {
             return GetAll().Where(predicate);
         }

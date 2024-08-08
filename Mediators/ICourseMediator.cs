@@ -1,13 +1,14 @@
-﻿using ExaminationSystem.ViewModels.Course;
+﻿using ExaminationSystem.DTO.Course;
+using ExaminationSystem.ViewModels.Course;
 
 namespace ExaminationSystem.Mediators
 {
     public interface ICourseMediator
     {
-        IEnumerable<CourseViewModel> GetAll();
-        CourseViewModel GetById(int id);
-        void Add(CourseCreateViewModel courseCreateVM);
-        void Update(CourseViewModel courseVM);
-        void Delete(int id);
+        CourseDTO GetById(int id);
+        IEnumerable<CourseDTO> GetAll();
+        int AddCourse(CourseCreateDTO courseDTO);
+        void EditCourse(CourseDTO courseDTO);
+        void DeleteCourse(int id);
     }
 }

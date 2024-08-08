@@ -14,6 +14,9 @@ namespace ExaminationSystem.Profiles
 
             CreateMap<CourseDTO, Course>().ReverseMap();
             CreateMap<CourseCreateDTO, Course>().ReverseMap();
+
+            CreateMap<CourseInstructor, CourseInstructorDTO>().ReverseMap();
+            CreateMap<CourseStudent, CourseStudentDTO>().ReverseMap();
         }
     }
 }

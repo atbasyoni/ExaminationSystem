@@ -1,4 +1,6 @@
-﻿namespace ExaminationSystem.Models
+﻿using ExaminationSystem.Enums;
+
+namespace ExaminationSystem.Models
 {
     public class Exam : BaseModel
     {
@@ -8,6 +10,7 @@
         public DateTime DueDate { get; set; }
         public int TotalQuestions { get; set; }
         public int TotalPoints { get; set; }
+        public ExamType Type { get; set; }
 
         public int CourseID { get; set; }
         public Course Course { get; set; }

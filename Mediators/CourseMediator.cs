@@ -1,12 +1,9 @@
 ﻿using ExaminationSystem.DTO.Course;
-using ExaminationSystem.Models;
-using ExaminationSystem.Repositories.Bases;
 using ExaminationSystem.Services.CourseInstructors;
 using ExaminationSystem.Services.Courses;
 using ExaminationSystem.Services.CourseStudents;
 using ExaminationSystem.Services.Departments;
 using ExaminationSystem.Services.Exams;
-using ExaminationSystem.ViewModels.Course;
 
 namespace ExaminationSystem.Mediators
 {
@@ -31,85 +28,51 @@ namespace ExaminationSystem.Mediators
             _examService = examService;
         }
 
-
-
-        //public int Add(CourseCreateDTO courseDTO)
-        //{
-        //    var course = courseDTO.MapOne<Course>();
-
-        //    _courseRepository.Add(course);
-
-        //    var department = _departmentRepository.Find(d => d.Id == courseDTO.DepartmentID, ["Courses"]);
-
-        //    department.Courses.Add(course);
-
-        //    _departmentRepository.Update(department);
-
-        //    return course.Id;
-        //}
-
-        //public void Delete(int id)
-        //{
-        //    var course = _courseRepository.GetByID(id);
-
-        //    if (course != null)
-        //    {
-
-        //        var department = _departmentRepository.GetByID(course.DepartmentID);
-
-        //        if (department != null)
-        //        {
-        //            department.Courses.Remove(course);
-        //            _departmentRepository.Update(department);
-        //        }
-
-        //        var courseInstructors = _courseInstructorRepository.Get(ci => ci.CourseID == id).ToList();
-
-        //        if (courseInstructors != null)
-        //        {
-        //            _courseInstructorRepository.DeleteRange(courseInstructors);
-        //        }
-
-        //        var courseStudents = _courseStudentRepository.Get(ci => ci.CourseID == id).ToList();
-
-        //        if (courseStudents != null)
-        //        {
-        //            _courseStudentRepository.DeleteRange(courseStudents);
-        //        }
-
-        //        var exams = _examRepository.Get(e => e.CourseID == id).ToList();
-        //        if (exams != null)
-        //        {
-        //            _examRepository.DeleteRange(exams);
-        //        }
-
-        //        _courseRepository.Delete(course);
-        //    }
-        //}
-
-        public void Add(CourseCreateViewModel courseCreateVM)
+        public int AddCourse(CourseCreateDTO courseDTO)
         {
-            throw new NotImplementedException();
+           int courseId =  _courseService.Add(courseDTO);
+
+            return courseId;
         }
 
-        public void Delete(int id)
+        public void EditCourse(CourseDTO courseDTO)
         {
-            throw new NotImplementedException();
+            _courseService.Update(courseDTO);
         }
 
-        public IEnumerable<CourseViewModel> GetAll()
+
+        public void DeleteCourse(int id)
         {
-            throw new NotImplementedException();
+            var course = _courseService.GetByID(id);
+
+            if (course != null)
+            {
+                _courseService.Delete(id);
+
+                var courseInstructors = _courseInstructorService.Get(ci => ci.CourseID == id);
+
+                if (courseInstructors != null)
+                {
+                    _courseInstructorService.DeleteRange(courseInstructors);
+                }
+
+                var courseStudents = _courseStudentService.Get(ci => ci.CourseID == id);
+
+                if (courseStudents != null)
+                {
+                    _courseStudentService.DeleteRange(courseStudents);
+                }
+            }
         }
 
-        public CourseViewModel GetById(int id)
+        public IEnumerable<CourseDTO> GetAll()
         {
-            throw new NotImplementedException();
+            return _courseService.GetAll();
         }
 
-        public void Update(CourseViewModel courseVM)
+        public CourseDTO GetById(int id)
         {
-            throw new NotImplementedException();
+            return _courseService.GetByID(id);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace ExaminationSystem.Repositories.Bases
     public interface IRepository<T> where T : BaseModel
     {
         IQueryable<T> GetAll();
-        IQueryable<T> Get(Expression<Func<T, bool>> predicate);
+        IQueryable<T> GetAll(Expression<Func<T, bool>> predicate);
         T GetByID(int id);
         T Add(T entity);
         IEnumerable<T> AddRange(IEnumerable<T> entities);

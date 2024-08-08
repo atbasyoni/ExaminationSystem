@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using ExaminationSystem.DTO.Exam;
+﻿using ExaminationSystem.DTO.Exam;
 using ExaminationSystem.Helpers;
-using ExaminationSystem.Services.Exams;
+using ExaminationSystem.Mediators;
 using ExaminationSystem.ViewModels;
 using ExaminationSystem.ViewModels.Exam;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +11,17 @@ namespace ExaminationSystem.Controllers
     [Route("[controller]/[action]")]
     public class ExamController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IExamService _examService;
+        private readonly IExamMediator _examMediator;
 
-        public ExamController(IMapper mapper, IExamService examService)
+        public ExamController(IExamMediator ExamMediator)
         {
-            _mapper = mapper;
-            _examService = examService;
+            _examMediator = ExamMediator;
         }
 
         [HttpGet]
         public ResultViewModel<IEnumerable<ExamViewModel>> GetAllExams()
         {
-            var exams = _examService.GetAll().AsQueryable().ProjectTo<ExamViewModel>(_mapper.ConfigurationProvider);
+            var exams = _examMediator.GetAll().AsQueryable().Map<ExamViewModel>();
 
             return new ResultViewModel<IEnumerable<ExamViewModel>>
             {
@@ -37,7 +33,7 @@ namespace ExaminationSystem.Controllers
         [HttpGet("{id}")]
         public ResultViewModel<ExamViewModel> GetExamByID(int id)
         {
-            var exam = _examService.GetByID(id).MapOne<ExamViewModel>();
+            var exam = _examMediator.GetById(id).MapOne<ExamViewModel>();
 
             return new ResultViewModel<ExamViewModel>
             {
@@ -47,11 +43,11 @@ namespace ExaminationSystem.Controllers
         }
 
         [HttpPost]
-        public ResultViewModel<int> CreateExam(ExamCreateViewModel ExamVM)
+        public ResultViewModel<int> CreateExam(ExamCreateViewModel examVM)
         {
-            var examCreateDTO = ExamVM.MapOne<ExamCreateDTO>();
-            int examId = _examService.Add(examCreateDTO);
-            
+            var examDTO = examVM.MapOne<ExamCreateDTO>();
+            int examId = _examMediator.AddExam(examDTO);
+
             return new ResultViewModel<int>
             {
                 IsSuccess = true,
@@ -63,7 +59,7 @@ namespace ExaminationSystem.Controllers
         public IActionResult EditExam(ExamViewModel examVM)
         {
             var examDTO = examVM.MapOne<ExamDTO>();
-            _examService.Update(examDTO);
+            _examMediator.EditExam(examDTO);
 
             return Ok();
         }
@@ -71,8 +67,8 @@ namespace ExaminationSystem.Controllers
         [HttpDelete]
         public IActionResult DeleteExam(int id)
         {
-            _examService.Delete(id);
-            return Ok();
+            _examMediator.DeleteExam(id);
+            return NoContent();
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿using ExaminationSystem.ViewModels.Exam;
+﻿using ExaminationSystem.DTO.Question;
+using ExaminationSystem.ViewModels.Exam;
 using ExaminationSystem.ViewModels.Question;
 
 namespace ExaminationSystem.Mediators
 {
     public interface IQuestionMediator
     {
-        IEnumerable<QuestionViewModel> GetAll();
-        QuestionViewModel GetById(int id);
-        void Add(QuestionCreateViewModel questionCreateVM);
-        void Update(QuestionViewModel questionVM);
-        void Delete(int id);
+        public QuestionDTO GetById(int id);
+        public int AddQuestion(QuestionCreateDTO questionDTO);
+        public void EditQuestion(QuestionDTO questionDTO);
+        public void DeleteQuestion(int id);
     }
 }

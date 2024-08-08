@@ -30,8 +30,7 @@ namespace ExaminationSystem.Mediators
 
         public int AddCourse(CourseCreateDTO courseDTO)
         {
-           int courseId =  _courseService.Add(courseDTO);
-
+            int courseId =  _courseService.Add(courseDTO);
             return courseId;
         }
 

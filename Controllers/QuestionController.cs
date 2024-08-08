@@ -1,7 +1,6 @@
-﻿using AutoMapper;
-using ExaminationSystem.DTO.Question;
+﻿using ExaminationSystem.DTO.Question;
 using ExaminationSystem.Helpers;
-using ExaminationSystem.Services.Questions;
+using ExaminationSystem.Mediators;
 using ExaminationSystem.ViewModels;
 using ExaminationSystem.ViewModels.Exam;
 using ExaminationSystem.ViewModels.Question;
@@ -13,20 +12,30 @@ namespace QuestioninationSystem.Controllers
     [Route("[controller]/[action]")]
     public class QuestionController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IQuestionService _questionService;
+        private readonly IQuestionMediator _questionMediator;
 
-        public QuestionController(IMapper mapper, IQuestionService questionService)
+        public QuestionController(IQuestionMediator questionMediator)
         {
-            _mapper = mapper;
-            _questionService = questionService;
+            _questionMediator = questionMediator;
+        }
+
+        [HttpGet("{id}")]
+        public ResultViewModel<QuestionViewModel> GetQuestionByID(int id)
+        {
+            var question = _questionMediator.GetById(id).MapOne<QuestionViewModel>();
+
+            return new ResultViewModel<QuestionViewModel>
+            {
+                IsSuccess = true,
+                Data = question,
+            };
         }
 
         [HttpPost]
         public ResultViewModel<int> CreateQuestion(QuestionCreateViewModel questionVM)
         {
-            var questionCreateDTO = questionVM.MapOne<QuestionCreateDTO>();
-            int questionId = _questionService.Add(questionCreateDTO);
+            var questionDTO = questionVM.MapOne<QuestionCreateDTO>();
+            int questionId = _questionMediator.AddQuestion(questionDTO);
 
             return new ResultViewModel<int>
             {
@@ -39,7 +48,7 @@ namespace QuestioninationSystem.Controllers
         public IActionResult EditQuestion(QuestionViewModel questionVM)
         {
             var questionDTO = questionVM.MapOne<QuestionDTO>();
-            _questionService.Update(questionDTO);
+            _questionMediator.EditQuestion(questionDTO);
 
             return Ok();
         }
@@ -47,8 +56,8 @@ namespace QuestioninationSystem.Controllers
         [HttpDelete]
         public IActionResult DeleteQuestion(int id)
         {
-            _questionService.Delete(id);
-            return Ok();
+            _questionMediator.DeleteQuestion(id);
+            return NoContent();
         }
     }
 }

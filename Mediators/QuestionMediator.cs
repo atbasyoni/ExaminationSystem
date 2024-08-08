@@ -2,6 +2,8 @@
 using ExaminationSystem.Models;
 using ExaminationSystem.Repositories.Bases;
 using ExaminationSystem.Services.Choices;
+using ExaminationSystem.Services.Exams;
+using ExaminationSystem.Services.Questions;
 using ExaminationSystem.ViewModels.Exam;
 using ExaminationSystem.ViewModels.Question;
 
@@ -9,58 +11,47 @@ namespace ExaminationSystem.Mediators
 {
     public class QuestionMediator : IQuestionMediator
     {
-        //public QuestionService(IRepository<Question> questionRepository, IChoiceService choiceService)
-        //{
-        //    _questionRepository = questionRepository;
-        //    _choiceService = choiceService;
-        //}
+        private readonly IQuestionService _questionService;
+        private readonly IExamQuestionService _examQuestionService;
 
-        //public int Add(QuestionCreateDTO questionCreateDTO)
-        //{
-        //    var question = questionCreateDTO.MapOne<Question>();
-
-        //    question = _questionRepository.Add(question);
-
-        //    if (questionCreateDTO.ChoiceDTOs != null)
-        //    {
-        //        _choiceService.AddRange(question.Id, questionCreateDTO.ChoiceDTOs);
-        //    }
-
-        //    return question.Id;
-        //}
-
-        //public void Delete(int id)
-        //{
-        //    var question = _questionRepository.GetWithTrackinByID(id);
-        //    _questionRepository.Delete(question);
-
-        //    _choiceService.DeleteRange(question.Choices);
-        //}
-
-
-        public void Add(QuestionCreateViewModel questionCreateVM)
+        public QuestionMediator(IQuestionService questionService, IExamQuestionService examQuestionService)
         {
-            throw new NotImplementedException();
+            _questionService = questionService;
+            _examQuestionService = examQuestionService;
         }
 
-        public void Delete(int id)
+        public int AddQuestion(QuestionCreateDTO questionDTO)
         {
-            throw new NotImplementedException();
+            int questionId = _questionService.Add(questionDTO);
+            return questionId;
         }
 
-        public IEnumerable<QuestionViewModel> GetAll()
+        public void EditQuestion(QuestionDTO questionDTO)
         {
-            throw new NotImplementedException();
+            _questionService.Update(questionDTO);
         }
 
-        public QuestionViewModel GetById(int id)
+
+        public void DeleteQuestion(int id)
         {
-            throw new NotImplementedException();
+            var Question = _questionService.GetByID(id);
+
+            if (Question != null)
+            {
+                _questionService.Delete(id);
+
+                var examQuestions = _examQuestionService.Get(eq => eq.QuestionID == id);
+
+                if (examQuestions != null) 
+                {
+                    _examQuestionService.DeleteRange(examQuestions);
+                }
+            }
         }
 
-        public void Update(QuestionViewModel questionVM)
+        public QuestionDTO GetById(int id)
         {
-            throw new NotImplementedException();
+            return _questionService.GetByID(id);
         }
     }
 }

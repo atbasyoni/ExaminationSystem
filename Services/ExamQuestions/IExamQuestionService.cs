@@ -1,4 +1,4 @@
-﻿using ExaminationSystem.DTO.ExamQuestion;
+﻿using ExaminationSystem.DTO.Exam;
 using ExaminationSystem.Models;
 using ExaminationSystem.ViewModels.Exam;
 using System.Linq.Expressions;

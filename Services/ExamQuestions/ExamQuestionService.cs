@@ -1,4 +1,4 @@
-﻿using ExaminationSystem.DTO.ExamQuestion;
+﻿using ExaminationSystem.DTO.Exam;
 using ExaminationSystem.Helpers;
 using ExaminationSystem.Models;
 using ExaminationSystem.Repositories.Bases;

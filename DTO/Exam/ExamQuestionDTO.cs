@@ -1,6 +1,6 @@
-﻿namespace ExaminationSystem.DTO.ExamQuestion
+﻿namespace ExaminationSystem.DTO.Exam
 {
-    public class ExamQuestionCreateDTO
+    public class ExamQuestionDTO
     {
         public int ExamID { get; set; }
         public int QuestionID { get; set; }

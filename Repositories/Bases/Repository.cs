@@ -14,15 +14,15 @@ namespace ExaminationSystem.Repositories.Bases
             _context = context;
         }
 
-        public T Add(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            _context.Set<T>().Add(entity);
+            await _context.Set<T>().AddAsync(entity);
             return entity;
         }
 
-        public IEnumerable<T> AddRange(IEnumerable<T> entities)
+        public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
         {
-            _context.Set<T>().AddRange(entities);
+            await _context.Set<T>().AddRangeAsync(entities);
             return entities;
         }
 
@@ -47,23 +47,23 @@ namespace ExaminationSystem.Repositories.Bases
             _context.Set<T>().UpdateRange(entities);
         }
 
-
-        public IQueryable<T> GetAll(Expression<Func<T, bool>> predicate)
+        public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate)
         {
-            return GetAll().Where(predicate);
+            return (await GetAllAsync()).Where(predicate);
         }
 
-        public IQueryable<T> GetAll()
+        public async Task<IQueryable<T>> GetAllAsync()
         {
             return _context.Set<T>().Where(x => !x.IsDeleted).AsNoTrackingWithIdentityResolution();
         }
 
-        public T GetByID(int id)
+        public async Task<T> GetByIDAsync(int id)
         {
-            return GetAll().FirstOrDefault(x => x.Id == id);
+            var queryable = await GetAllAsync();
+            return await queryable.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public T Find(Expression<Func<T, bool>> criteria, string[] includes = null)
+        public async Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
 
@@ -71,20 +71,20 @@ namespace ExaminationSystem.Repositories.Bases
                 foreach (var include in includes)
                     query = query.Include(include);
 
-            return query.SingleOrDefault(criteria);
+            return await query.SingleOrDefaultAsync(criteria);
         }
 
-        public T GetWithTrackinByID(int id)
+        public async Task<T> GetWithTrackingByIDAsync(int id)
         {
-            return _context.Set<T>()
+            return await _context.Set<T>()
                 .Where(x => !x.IsDeleted && x.Id == id)
                 .AsTracking()
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

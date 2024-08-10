@@ -6,7 +6,7 @@ namespace ExaminationSystem.Services.CourseInstructors
 {
     public interface ICourseInstructorService
     {
-        IEnumerable<CourseInstructorDTO> Get(Expression<Func<CourseInstructor, bool>> predicate);
-        void DeleteRange(IEnumerable<CourseInstructorDTO> courseInstructorDTOs);
+        Task<IEnumerable<CourseInstructorDTO>> Get(Expression<Func<CourseInstructor, bool>> predicate);
+        Task DeleteRange(IEnumerable<CourseInstructorDTO> courseInstructorDTOs);
     }
 }

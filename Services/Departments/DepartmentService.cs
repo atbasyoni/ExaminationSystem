@@ -18,48 +18,48 @@ namespace ExaminationSystem.Services.Departments
             _departmentRepository = departmentRepository;
         }
 
-        public int Add(DepartmentCreateDTO departmentDTO)
+        public async Task<int> Add(DepartmentCreateDTO departmentDTO)
         {
             var department = departmentDTO.MapOne<Department>();
-            department = _departmentRepository.Add(department);
+            department = await _departmentRepository.AddAsync(department);
 
-            _departmentRepository.SaveChanges();
+            await _departmentRepository.SaveChangesAsync();
 
             return department.Id;
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var department = _departmentRepository.GetByID(id);
+            var department = await _departmentRepository.GetByIDAsync(id);
 
             if (department == null) throw new KeyNotFoundException("Department not founnd!");
 
             _departmentRepository.Delete(department);
-            _departmentRepository.SaveChanges();
+            await _departmentRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<DepartmentDTO> GetAll()
+        public async Task<IEnumerable<DepartmentDTO>> GetAll()
         {
-            var departments = _departmentRepository.GetAll();
+            var departments = await _departmentRepository.GetAllAsync();
             return departments.Map<DepartmentDTO>();
         }
 
-        public DepartmentDTO GetByID(int id)
+        public async Task<DepartmentDTO> GetByID(int id)
         {
-            var department = _departmentRepository.GetByID(id);
+            var department = await _departmentRepository.GetByIDAsync(id);
             var departmentDTO = department.MapOne<DepartmentDTO>();
 
             return departmentDTO;
         }
 
-        public void Update(DepartmentDTO departmentDTO)
+        public async Task Update(DepartmentDTO departmentDTO)
         {
-            var department = _departmentRepository.GetByID(departmentDTO.Id);
+            var department = await _departmentRepository.GetByIDAsync(departmentDTO.Id);
             if (department == null) throw new KeyNotFoundException("Department not found!");
 
             department = departmentDTO.MapOne<Department>();
             _departmentRepository.Update(department);
-            _departmentRepository.SaveChanges();
+            await _departmentRepository.SaveChangesAsync();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using ExaminationSystem.DTO.Exam;
 using ExaminationSystem.Helpers;
-using ExaminationSystem.Mediators;
+using ExaminationSystem.Mediators.Exams;
+using ExaminationSystem.Models;
 using ExaminationSystem.ViewModels;
 using ExaminationSystem.ViewModels.Exam;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExaminationSystem.Controllers
@@ -19,9 +21,9 @@ namespace ExaminationSystem.Controllers
         }
 
         [HttpGet]
-        public ResultViewModel<IEnumerable<ExamViewModel>> GetAllExams()
+        public async Task<ResultViewModel<IEnumerable<ExamViewModel>>> GetAllExams()
         {
-            var exams = _examMediator.GetAll().AsQueryable().Map<ExamViewModel>();
+            var exams = (await _examMediator.GetAll()).AsQueryable().Map<ExamViewModel>();
 
             return new ResultViewModel<IEnumerable<ExamViewModel>>
             {
@@ -31,9 +33,9 @@ namespace ExaminationSystem.Controllers
         }
 
         [HttpGet("{id}")]
-        public ResultViewModel<ExamViewModel> GetExamByID(int id)
+        public async Task<ResultViewModel<ExamViewModel>> GetExamByID(int id)
         {
-            var exam = _examMediator.GetById(id).MapOne<ExamViewModel>();
+            var exam = (await _examMediator.GetById(id)).MapOne<ExamViewModel>();
 
             return new ResultViewModel<ExamViewModel>
             {
@@ -42,11 +44,12 @@ namespace ExaminationSystem.Controllers
             };
         }
 
+        [Authorize("Instructor")]
         [HttpPost]
-        public ResultViewModel<int> CreateExam(ExamCreateViewModel examVM)
+        public async Task<ResultViewModel<int>> CreateExam(ExamCreateViewModel examVM)
         {
             var examDTO = examVM.MapOne<ExamCreateDTO>();
-            int examId = _examMediator.AddExam(examDTO);
+            int examId = await _examMediator.AddExam(examDTO);
 
             return new ResultViewModel<int>
             {
@@ -55,20 +58,29 @@ namespace ExaminationSystem.Controllers
             };
         }
 
+        [Authorize("Instructor")]
         [HttpPut]
-        public IActionResult EditExam(ExamViewModel examVM)
+        public async Task<ResultViewModel<bool>> EditExam(ExamViewModel examVM)
         {
             var examDTO = examVM.MapOne<ExamDTO>();
-            _examMediator.EditExam(examDTO);
+            await _examMediator.EditExam(examDTO);
 
-            return Ok();
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
         }
 
+        [Authorize("Instructor")]
         [HttpDelete]
-        public IActionResult DeleteExam(int id)
+        public async Task<ResultViewModel<bool>> DeleteExam(int id)
         {
-            _examMediator.DeleteExam(id);
-            return NoContent();
+            await _examMediator.DeleteExam(id);
+            
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
         }
     }
 }

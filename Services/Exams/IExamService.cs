@@ -5,10 +5,10 @@ namespace ExaminationSystem.Services.Exams
 {
     public interface IExamService
     {
-        int Add(ExamCreateDTO examDTO);
-        IEnumerable<ExamDTO> GetAll();
-        ExamDTO GetByID(int examID);
-        void Update(ExamDTO examDTO);
-        void Delete(int id);
+        Task<int> Add(ExamCreateDTO examDTO);
+        Task<IEnumerable<ExamDTO>> GetAll();
+        Task Update(ExamDTO examDTO);
+        Task<ExamDTO> GetByID(int examID);
+        Task Delete(int id);
     }
 }

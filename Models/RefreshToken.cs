@@ -5,7 +5,7 @@ namespace ExaminationSystem.Models
     [Owned]
     public class RefreshToken
     {
-        public string Token { get; set; } = null!;
+        public string Token { get; set; }
         public DateTime ExpiredOn { get; set; }
         public bool IsExpired => DateTime.UtcNow >= ExpiredOn;
         public DateTime CreatedOn { get; set; }

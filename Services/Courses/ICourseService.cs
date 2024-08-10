@@ -4,10 +4,10 @@ namespace ExaminationSystem.Services.Courses
 {
     public interface ICourseService
     {
-        int Add(CourseCreateDTO courseDTO);
-        IEnumerable<CourseDTO> GetAll();
-        CourseDTO GetByID(int id);
-        void Update(CourseDTO courseDTO);
-        void Delete(int id);
+        Task<int> Add(CourseCreateDTO courseDTO);
+        Task<IEnumerable<CourseDTO>> GetAll();
+        Task<CourseDTO> GetByID(int id);
+        Task Update(CourseDTO courseDTO);
+        Task Delete(int id);
     }
 }

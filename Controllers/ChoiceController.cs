@@ -2,42 +2,33 @@
 using AutoMapper.QueryableExtensions;
 using ExaminationSystem.DTO.Choice;
 using ExaminationSystem.Helpers;
+using ExaminationSystem.Mediators.Choices;
+using ExaminationSystem.Models;
 using ExaminationSystem.Services.Choices;
 using ExaminationSystem.ViewModels;
 using ExaminationSystem.ViewModels.Choices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChoiceinationSystem.Controllers
 {
+    [Authorize("Instructor")]
     [Route("[controller]/[action]")]
     [ApiController]
     public class ChoiceController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IChoiceService _choiceService;
+        private readonly IChoiceMediator _choiceMediator;
 
-        public ChoiceController(IMapper mapper, IChoiceService choiceService)
+        public ChoiceController(IChoiceMediator choiceMediator)
         {
-            _mapper = mapper;
-            _choiceService = choiceService;
+            _choiceMediator = choiceMediator;
         }
 
-        [HttpGet]
-        public ResultViewModel<IEnumerable<ChoiceViewModel>> GetAllChoices()
-        {
-            var choices = _choiceService.GetAll().AsQueryable().ProjectTo<ChoiceViewModel>(_mapper.ConfigurationProvider);
-
-            return new ResultViewModel<IEnumerable<ChoiceViewModel>>
-            {
-                IsSuccess = true,
-                Data = choices,
-            };
-        }
 
         [HttpGet("{id}")]
-        public ResultViewModel<ChoiceViewModel> GetChoiceByID(int id)
+        public async Task<ResultViewModel<ChoiceViewModel>> GetChoiceByID(int id)
         {
-            var choice = _choiceService.GetByID(id).MapOne<ChoiceViewModel>();
+            var choice = (await _choiceMediator.GetById(id)).MapOne<ChoiceViewModel>();
 
             return new ResultViewModel<ChoiceViewModel>
             {
@@ -47,10 +38,10 @@ namespace ChoiceinationSystem.Controllers
         }
 
         [HttpPost]
-        public ResultViewModel<int> CreateChoice(ChoiceCreateViewModel choiceVM)
+        public async Task<ResultViewModel<int>> CreateChoice(ChoiceCreateViewModel choiceVM)
         {
             var choiceCreateDTO = choiceVM.MapOne<ChoiceCreateDTO>();
-            int choiceId = _choiceService.Add(choiceCreateDTO);
+            int choiceId = await _choiceMediator.AddChoice(choiceCreateDTO);
 
             return new ResultViewModel<int>
             {
@@ -60,19 +51,26 @@ namespace ChoiceinationSystem.Controllers
         }
 
         [HttpPut]
-        public IActionResult EditChoice(ChoiceViewModel choiceVM)
+        public async Task<ResultViewModel<bool>> EditChoice(ChoiceViewModel choiceVM)
         {
             var choiceDTO = choiceVM.MapOne<ChoiceDTO>();
-            _choiceService.Update(choiceDTO);
+            await _choiceMediator.EditChoice(choiceDTO);
 
-            return Ok();
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
         }
 
         [HttpDelete]
-        public IActionResult DeleteChoice(int id)
+        public async Task<ResultViewModel<bool>> DeleteChoice(int id)
         {
-            _choiceService.Delete(id);
-            return Ok();
+            await _choiceMediator.DeleteChoice(id);
+            
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
         }
     }
 }

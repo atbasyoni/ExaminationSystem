@@ -15,41 +15,41 @@ namespace ExaminationSystem.Services.Exams
             _examRepository = examRepository;
         }
 
-        public int Add(ExamCreateDTO examDTO)
+        public async Task<int> Add(ExamCreateDTO examDTO)
         {
             var exam = examDTO.MapOne<Exam>();
 
-            exam = _examRepository.Add(exam);
-            _examRepository.SaveChanges();
+            exam = await _examRepository.AddAsync(exam);
+            await _examRepository.SaveChangesAsync();
 
             return exam.Id;
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var exam = _examRepository.GetByID(id);
+            var exam = await _examRepository.GetByIDAsync(id);
              _examRepository.Delete(exam);
-            _examRepository.SaveChanges();
+            await _examRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<ExamDTO> GetAll()
+        public async Task<IEnumerable<ExamDTO>> GetAll()
         {
-            return _examRepository.GetAll().Map<ExamDTO>();
+            return (await _examRepository.GetAllAsync()).Map<ExamDTO>();
         }
 
-        public ExamDTO GetByID(int examID)
+        public async Task<ExamDTO> GetByID(int examID)
         {
-            return _examRepository.GetByID(examID).MapOne<ExamDTO>();
+            return (await _examRepository.GetByIDAsync(examID)).MapOne<ExamDTO>();
         }
 
-        public void Update(ExamDTO examDTO)
+        public async Task Update(ExamDTO examDTO)
         {
             var exam = examDTO.MapOne<Exam>();
 
             if (exam != null)
             {
                 _examRepository.Update(exam);
-                _examRepository.SaveChanges();
+                await _examRepository.SaveChangesAsync();
             }
         }
     }

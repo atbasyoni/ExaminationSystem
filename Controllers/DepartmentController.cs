@@ -1,8 +1,10 @@
 ﻿using ExaminationSystem.DTO.Department;
 using ExaminationSystem.Helpers;
-using ExaminationSystem.Mediators;
+using ExaminationSystem.Mediators.Departments;
+using ExaminationSystem.Models;
 using ExaminationSystem.ViewModels;
 using ExaminationSystem.ViewModels.Department;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExaminationSystem.Controllers
@@ -19,9 +21,9 @@ namespace ExaminationSystem.Controllers
         }
 
         [HttpGet]
-        public ResultViewModel<IEnumerable<DepartmentViewModel>> GetAllDepartments()
+        public async Task<ResultViewModel<IEnumerable<DepartmentViewModel>>> GetAllDepartments()
         {
-            var departments = _departmentMediator.GetAll().AsQueryable().Map<DepartmentViewModel>();
+            var departments = (await _departmentMediator.GetAll()).AsQueryable().Map<DepartmentViewModel>();
 
             return new ResultViewModel<IEnumerable<DepartmentViewModel>>
             {
@@ -31,9 +33,9 @@ namespace ExaminationSystem.Controllers
         }
 
         [HttpGet("{id}")]
-        public ResultViewModel<DepartmentViewModel> GetDepartmentByID(int id)
+        public async Task<ResultViewModel<DepartmentViewModel>> GetDepartmentByID(int id)
         {
-            var department = _departmentMediator.GetById(id).MapOne<DepartmentViewModel>();
+            var department = (await _departmentMediator.GetById(id)).MapOne<DepartmentViewModel>();
 
             return new ResultViewModel<DepartmentViewModel>
             {
@@ -42,11 +44,12 @@ namespace ExaminationSystem.Controllers
             };
         }
 
+        [Authorize("Instructor")]
         [HttpPost]
-        public ResultViewModel<int> CreateDepartment(DepartmentCreateViewModel departmentVM)
+        public async Task<ResultViewModel<int>> CreateDepartment(DepartmentCreateViewModel departmentVM)
         {
             var departmentDTO = departmentVM.MapOne<DepartmentCreateDTO>();
-            int departmentId = _departmentMediator.AddDepartment(departmentDTO);
+            int departmentId = await _departmentMediator.AddDepartment(departmentDTO);
 
             return new ResultViewModel<int>
             {
@@ -55,20 +58,29 @@ namespace ExaminationSystem.Controllers
             };
         }
 
+        [Authorize("Instructor")]
         [HttpPut]
-        public IActionResult EditDepartment(DepartmentViewModel departmentVM)
+        public async Task<ResultViewModel<bool>> EditDepartment(DepartmentViewModel departmentVM)
         {
             var departmentDTO = departmentVM.MapOne<DepartmentDTO>();
-            _departmentMediator.EditDepartment(departmentDTO);
+            await _departmentMediator.EditDepartment(departmentDTO);
 
-            return Ok();
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
         }
 
+        [Authorize("Instructor")]
         [HttpDelete]
-        public IActionResult DeleteDepartment(int id)
+        public async Task<ResultViewModel<bool>> DeleteDepartment(int id)
         {
-            _departmentMediator.DeleteDepartment(id);
-            return NoContent();
+            await _departmentMediator.DeleteDepartment(id);
+             
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
         }
     }
 }

@@ -4,9 +4,9 @@ namespace ExaminationSystem.Services.Questions
 {
     public interface IQuestionService
     {
-        int Add(QuestionCreateDTO questionCreateDTO);
-        QuestionDTO GetByID(int id);
-        void Update(QuestionDTO questionDTO);
-        void Delete(int id);
+        Task<int> Add(QuestionCreateDTO questionCreateDTO);
+        Task<QuestionDTO> GetByID(int id);
+        Task Update(QuestionDTO questionDTO);
+        Task Delete(int id);
     }
 }

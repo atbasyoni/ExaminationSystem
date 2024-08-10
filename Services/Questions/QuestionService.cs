@@ -14,34 +14,34 @@ namespace ExaminationSystem.Services.Questions
             _questionRepository = questionRepository;
         }
 
-        public int Add(QuestionCreateDTO questionCreateDTO)
+        public async Task<int> Add(QuestionCreateDTO questionCreateDTO)
         {
             var question = questionCreateDTO.MapOne<Question>();
             
-            question = _questionRepository.Add(question);
-            _questionRepository.SaveChanges();
+            question = await _questionRepository.AddAsync(question);
+            await _questionRepository.SaveChangesAsync();
 
             return question.Id;
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var question = _questionRepository.GetWithTrackinByID(id);
+            var question = await _questionRepository.GetWithTrackingByIDAsync(id);
             _questionRepository.Delete(question);
-            _questionRepository.SaveChanges();
+            await _questionRepository.SaveChangesAsync();
         }
 
-        public QuestionDTO GetByID(int id)
+        public async Task<QuestionDTO> GetByID(int id)
         {
-            var question = _questionRepository.GetByID(id);
+            var question = await _questionRepository.GetByIDAsync(id);
             return question.MapOne<QuestionDTO>();
         }
 
-        public void Update(QuestionDTO questionDTO)
+        public async Task Update(QuestionDTO questionDTO)
         {
             var question = questionDTO.MapOne<Question>();
             _questionRepository.Update(question);
-            _questionRepository.SaveChanges();
+            await _questionRepository.SaveChangesAsync();
         }
     }
 }

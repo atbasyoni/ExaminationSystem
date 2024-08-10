@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Diagnostics;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace ExaminationSystem
 {
@@ -20,6 +21,7 @@ namespace ExaminationSystem
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            ConfigurationManager configuration = builder.Configuration;
 
             // Add services to the container.
             builder.Services.AddDbContext<Context>(option =>
@@ -27,9 +29,10 @@ namespace ExaminationSystem
             .LogTo(log => Debug.WriteLine(log), LogLevel.Information)
             .EnableSensitiveDataLogging());
 
-            builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+            builder.Services.AddIdentity<User, IdentityRole<int>>()
+            .AddEntityFrameworkStores<Context>();
 
-            builder.Services.AddIdentity<User, IdentityRole<int>>().AddEntityFrameworkStores<Context>();
+            builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
             builder.Services.AddControllers();
 
@@ -42,19 +45,30 @@ namespace ExaminationSystem
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(option =>
+            }).AddJwtBearer(options =>
             {
-                option.SaveToken = true;
-                option.RequireHttpsMetadata = false;
-                option.TokenValidationParameters = new TokenValidationParameters()
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
                     ValidateAudience = true,
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidAudience = "https://localhost:4200/",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+                    ClockSkew = TimeSpan.Zero,
                 };
+            });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Instructor", policy =>
+                    policy.RequireRole("Instructor"));
+
+                options.AddPolicy("Student", policy =>
+                    policy.RequireRole("Student"));
             });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -63,7 +77,7 @@ namespace ExaminationSystem
             {
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = @"JWT Authorization Example : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                    Description = @"JWT Authorization header using the Bearer scheme. Example : Bearer eyJhbGciOiJIUzI1",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
@@ -93,7 +107,7 @@ namespace ExaminationSystem
 
             MapperHelper.Mapper = app.Services.GetService<IMapper>();
 
-            app.UseMiddleware<GlobalErrorHandlerMiddleware>();
+            //app.UseMiddleware<GlobalErrorHandlerMiddleware>();
             app.UseMiddleware<TransactionMiddleware>();
 
             // Configure the HTTP request pipeline.

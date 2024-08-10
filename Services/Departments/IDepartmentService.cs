@@ -5,10 +5,10 @@ namespace ExaminationSystem.Services.Departments
 {
     public interface IDepartmentService
     {
-        int Add(DepartmentCreateDTO departmentDTO);
-        IEnumerable<DepartmentDTO> GetAll();
-        DepartmentDTO GetByID(int id);
-        void Update(DepartmentDTO departmentDTO);
-        void Delete(int id);
+        Task<int> Add(DepartmentCreateDTO departmentDTO);
+        Task<IEnumerable<DepartmentDTO>> GetAll();
+        Task<DepartmentDTO> GetByID(int id);
+        Task Update(DepartmentDTO departmentDTO);
+        Task Delete(int id);
     }
 }

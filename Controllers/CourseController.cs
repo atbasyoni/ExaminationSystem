@@ -2,11 +2,12 @@
 using AutoMapper.QueryableExtensions;
 using ExaminationSystem.DTO.Course;
 using ExaminationSystem.Helpers;
-using ExaminationSystem.Mediators;
+using ExaminationSystem.Mediators.Courses;
 using ExaminationSystem.Models;
 using ExaminationSystem.Services.Courses;
 using ExaminationSystem.ViewModels;
 using ExaminationSystem.ViewModels.Course;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExaminationSystem.Controllers
@@ -23,9 +24,9 @@ namespace ExaminationSystem.Controllers
         }
 
         [HttpGet]
-        public ResultViewModel<IEnumerable<CourseViewModel>> GetAllCourses()
+        public async Task<ResultViewModel<IEnumerable<CourseViewModel>>> GetAllCourses()
         {
-            var courses = _courseMediator.GetAll().AsQueryable().Map<CourseViewModel>();
+            var courses = (await _courseMediator.GetAll()).AsQueryable().Map<CourseViewModel>();
 
             return new ResultViewModel<IEnumerable<CourseViewModel>>
             {
@@ -35,9 +36,9 @@ namespace ExaminationSystem.Controllers
         }
 
         [HttpGet("{id}")]
-        public ResultViewModel<CourseViewModel> GetCourseByID(int id)
+        public async Task<ResultViewModel<CourseViewModel>> GetCourseByID(int id)
         {
-            var course = _courseMediator.GetById(id).MapOne<CourseViewModel>();
+            var course = (await _courseMediator.GetById(id)).MapOne<CourseViewModel>();
 
             return new ResultViewModel<CourseViewModel>
             {
@@ -46,11 +47,12 @@ namespace ExaminationSystem.Controllers
             };
         }
 
+        [Authorize("Instructor")]
         [HttpPost]
-        public ResultViewModel<int> CreateCourse(CourseCreateViewModel courseVM)
+        public async Task<ResultViewModel<int>> CreateCourse(CourseCreateViewModel courseVM)
         {
             var courseDTO = courseVM.MapOne<CourseCreateDTO>();
-            int courseId = _courseMediator.AddCourse(courseDTO);
+            int courseId =  await _courseMediator.AddCourse(courseDTO);
             
             return new ResultViewModel<int>
             {
@@ -59,20 +61,42 @@ namespace ExaminationSystem.Controllers
             };
         }
 
+        [Authorize("Instructor")]
         [HttpPut]
-        public IActionResult EditCourse(CourseViewModel courseVM)
+        public async Task<ResultViewModel<bool>> EditCourse(CourseViewModel courseVM)
         {
             var courseDTO = courseVM.MapOne<CourseDTO>();
-            _courseMediator.EditCourse(courseDTO);
+            await _courseMediator.EditCourse(courseDTO);
 
-            return Ok();
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
         }
 
+        [Authorize("Instructor")]
         [HttpDelete]
-        public IActionResult DeleteCourse(int id) 
+        public async Task<ResultViewModel<bool>> DeleteCourse(int id) 
         {
-            _courseMediator.DeleteCourse(id);
-            return NoContent();
+            await _courseMediator.DeleteCourse(id);
+            
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
+        }
+
+        [Authorize("Student")]
+        [HttpPost]
+        public ResultViewModel<bool> EnrollStudent(int studentId, CourseViewModel courseVM)
+        {
+            var courseDTO = courseVM.MapOne<CourseDTO>();
+            _courseMediator.AssignStudentToCourse(studentId, );
+
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true
+            };
         }
     }
 }

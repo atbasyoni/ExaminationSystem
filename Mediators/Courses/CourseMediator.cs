@@ -5,7 +5,7 @@ using ExaminationSystem.Services.CourseStudents;
 using ExaminationSystem.Services.Departments;
 using ExaminationSystem.Services.Exams;
 
-namespace ExaminationSystem.Mediators
+namespace ExaminationSystem.Mediators.Courses
 {
     public class CourseMediator : ICourseMediator
     {
@@ -15,10 +15,10 @@ namespace ExaminationSystem.Mediators
         private readonly IDepartmentService _departmentService;
         private readonly IExamService _examService;
 
-        public CourseMediator(ICourseService courseService, 
-            ICourseInstructorService courseInstructorService, 
-            ICourseStudentService courseStudentService, 
-            IDepartmentService departmentService, 
+        public CourseMediator(ICourseService courseService,
+            ICourseInstructorService courseInstructorService,
+            ICourseStudentService courseStudentService,
+            IDepartmentService departmentService,
             IExamService examService)
         {
             _courseService = courseService;
@@ -28,50 +28,50 @@ namespace ExaminationSystem.Mediators
             _examService = examService;
         }
 
-        public int AddCourse(CourseCreateDTO courseDTO)
+        public async Task<int> AddCourse(CourseCreateDTO courseDTO)
         {
-            int courseId =  _courseService.Add(courseDTO);
+            int courseId = await _courseService.Add(courseDTO);
             return courseId;
         }
 
-        public void EditCourse(CourseDTO courseDTO)
+        public async Task EditCourse(CourseDTO courseDTO)
         {
-            _courseService.Update(courseDTO);
+            await _courseService.Update(courseDTO);
         }
 
 
-        public void DeleteCourse(int id)
+        public async Task DeleteCourse(int id)
         {
-            var course = _courseService.GetByID(id);
+            var course = await _courseService.GetByID(id);
 
             if (course != null)
             {
-                _courseService.Delete(id);
+                await _courseService.Delete(id);
 
-                var courseInstructors = _courseInstructorService.Get(ci => ci.CourseID == id);
+                var courseInstructors = await _courseInstructorService.Get(ci => ci.CourseID == id);
 
                 if (courseInstructors != null)
                 {
-                    _courseInstructorService.DeleteRange(courseInstructors);
+                    await _courseInstructorService.DeleteRange(courseInstructors);
                 }
 
-                var courseStudents = _courseStudentService.Get(ci => ci.CourseID == id);
+                var courseStudents = await _courseStudentService.Get(ci => ci.CourseID == id);
 
                 if (courseStudents != null)
                 {
-                    _courseStudentService.DeleteRange(courseStudents);
+                    await _courseStudentService.DeleteRange(courseStudents);
                 }
             }
         }
 
-        public IEnumerable<CourseDTO> GetAll()
+        public async Task<IEnumerable<CourseDTO>> GetAll()
         {
-            return _courseService.GetAll();
+            return await _courseService.GetAll();
         }
 
-        public CourseDTO GetById(int id)
+        public async Task<CourseDTO> GetById(int id)
         {
-            return _courseService.GetByID(id);
+            return await _courseService.GetByID(id);
         }
     }
 }

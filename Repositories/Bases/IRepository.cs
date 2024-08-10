@@ -5,16 +5,16 @@ namespace ExaminationSystem.Repositories.Bases
 {
     public interface IRepository<T> where T : BaseModel
     {
-        IQueryable<T> GetAll();
-        IQueryable<T> GetAll(Expression<Func<T, bool>> predicate);
-        T GetByID(int id);
-        T Add(T entity);
-        IEnumerable<T> AddRange(IEnumerable<T> entities);
-        T Find(Expression<Func<T, bool>> criteria, string[] includes = null);
+        Task<IQueryable<T>> GetAllAsync();
+        Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate);
+        Task<T> GetByIDAsync(int id);
+        Task<T> GetWithTrackingByIDAsync(int id);
+        Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
+        Task<T> AddAsync(T entity);
+        Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
         void Update(T entity);
         void Delete(T entity);
         void DeleteRange(IEnumerable<T> entities);
-        T GetWithTrackinByID(int id);
-        void SaveChanges();
+        Task SaveChangesAsync();
     }
 }

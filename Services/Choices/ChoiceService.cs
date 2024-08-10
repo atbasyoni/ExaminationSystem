@@ -15,21 +15,21 @@ namespace ExaminationSystem.Services.Choices
             _choiceRepository = choiceRepository;
         }
 
-        public int Add(ChoiceCreateDTO choiceDTO)
+        public async Task<int> Add(ChoiceCreateDTO choiceDTO)
         {
             var choice = choiceDTO.MapOne<Choice>();
-            choice = _choiceRepository.Add(choice);
+            choice = await _choiceRepository.AddAsync(choice);
 
-            _choiceRepository.SaveChanges();
+            await _choiceRepository.SaveChangesAsync();
 
             return choice.Id;
         }
 
-        public void AddRange(int questionID, List<ChoiceCreateDTO> choices)
+        public async Task AddRange(int questionID, List<ChoiceCreateDTO> choices)
         {
             foreach (ChoiceCreateDTO choice in choices)
             {
-                _choiceRepository.Add(
+                await _choiceRepository.AddAsync(
                     new Choice
                     {
                         QuestionID = questionID,
@@ -39,37 +39,37 @@ namespace ExaminationSystem.Services.Choices
                 );
             }
 
-            _choiceRepository.SaveChanges();
+            await _choiceRepository.SaveChangesAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var choice = _choiceRepository.GetByID(id);
+            var choice = await _choiceRepository.GetByIDAsync(id);
             _choiceRepository.Delete(choice);
-            _choiceRepository.SaveChanges();
+            await _choiceRepository.SaveChangesAsync();
         }
         
-        public void DeleteRange(IEnumerable<Choice> choices)
+        public async Task DeleteRange(IEnumerable<Choice> choices)
         {
             _choiceRepository.DeleteRange(choices);
-            _choiceRepository.SaveChanges();
+            await _choiceRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<ChoiceDTO> GetAll()
+        public async Task<IEnumerable<ChoiceDTO>> GetAll()
         {
-            return _choiceRepository.GetAll().AsQueryable().Map<ChoiceDTO>();
+            return (await _choiceRepository.GetAllAsync()).AsQueryable().Map<ChoiceDTO>();
         }
 
-        public ChoiceDTO GetByID(int id)
+        public async Task<ChoiceDTO> GetByID(int id)
         {
-            return _choiceRepository.GetByID(id).MapOne<ChoiceDTO>();
+            return (await _choiceRepository.GetByIDAsync(id)).MapOne<ChoiceDTO>();
         }
 
-        public void Update(ChoiceDTO choiceDTO)
+        public async Task Update(ChoiceDTO choiceDTO)
         {
-            var choice = _choiceRepository.GetWithTrackinByID(choiceDTO.Id);
+            var choice = await _choiceRepository.GetWithTrackingByIDAsync(choiceDTO.Id);
             _choiceRepository.Update(choice);
-            _choiceRepository.SaveChanges();
+            await _choiceRepository.SaveChangesAsync();
         }
     }
 }

@@ -14,45 +14,45 @@ namespace ExaminationSystem.Services.Courses
             _courseRepository = courseRepository;
         }
 
-        public int Add(CourseCreateDTO courseDTO)
+        public async Task<int> Add(CourseCreateDTO courseDTO)
         {
             var course = courseDTO.MapOne<Course>();
-            _courseRepository.Add(course);
-            _courseRepository.SaveChanges();
+            await _courseRepository.AddAsync(course);
+            await _courseRepository.SaveChangesAsync();
 
             return course.Id;
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var course = _courseRepository.GetByID(id);
+            var course = await _courseRepository.GetByIDAsync(id);
 
             if (course != null)
             {
                 _courseRepository.Delete(course);
-                _courseRepository.SaveChanges();
+                await _courseRepository.SaveChangesAsync();
             }
         }
 
-        public IEnumerable<CourseDTO> GetAll()
+        public async Task<IEnumerable<CourseDTO>> GetAll()
         {
-            return _courseRepository.GetAll().Map<CourseDTO>();
+            return (await _courseRepository.GetAllAsync()).Map<CourseDTO>();
         }
 
-        public CourseDTO GetByID(int id)
+        public async Task<CourseDTO> GetByID(int id)
         {
-            return _courseRepository.GetByID(id).MapOne<CourseDTO>();
+            return (await _courseRepository.GetByIDAsync(id)).MapOne<CourseDTO>();
         }
 
-        public void Update(CourseDTO courseDTO)
+        public async Task Update(CourseDTO courseDTO)
         {
-            var course = _courseRepository.GetByID(courseDTO.Id);
+            var course = await _courseRepository.GetByIDAsync(courseDTO.Id);
 
             if (course == null) throw new KeyNotFoundException("Course not found!");
 
             course = courseDTO.MapOne<Course>();
             _courseRepository.Update(course);
-            _courseRepository.SaveChanges();
+            await _courseRepository.SaveChangesAsync();
         }
     }
 }

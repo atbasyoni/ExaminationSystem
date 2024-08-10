@@ -16,16 +16,17 @@ namespace ExaminationSystem.Services.CourseStudents
             _repository = repository;
         }
 
-        public IEnumerable<CourseStudentDTO> Get(Expression<Func<CourseStudent, bool>> predicate)
+        public async Task<IEnumerable<CourseStudentDTO>> Get(Expression<Func<CourseStudent, bool>> predicate)
         {
-            IEnumerable<CourseStudent> courseStudents = _repository.GetAll(predicate).ToList();
+            IEnumerable<CourseStudent> courseStudents = (await _repository.GetAllAsync(predicate)).ToList();
             return courseStudents.AsQueryable().Map<CourseStudentDTO>();
         }
 
-        public void DeleteRange(IEnumerable<CourseStudentDTO> courseStudentDTOs)
+        public async Task DeleteRange(IEnumerable<CourseStudentDTO> courseStudentDTOs)
         {
             var courseStudents = courseStudentDTOs.AsQueryable().Map<CourseStudent>();
             _repository.DeleteRange(courseStudents);
+            await _repository.SaveChangesAsync();
         }
     }
 }

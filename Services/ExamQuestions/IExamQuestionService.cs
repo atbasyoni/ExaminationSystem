@@ -7,9 +7,9 @@ namespace ExaminationSystem.Services.Exams
 {
     public interface IExamQuestionService
     {
-        void Add(ExamQuestionCreateViewModel viewModel);
-        void AddRange(int examId, IEnumerable<int> QuestionIDs);
-        IEnumerable<ExamQuestionDTO> Get(Expression<Func<ExamQuestion, bool>> predicate);
-        void DeleteRange(IEnumerable<ExamQuestionDTO> examQuestionDTOs);
+        Task<IEnumerable<ExamQuestionDTO>> Get(Expression<Func<ExamQuestion, bool>> predicate);
+        Task Add(ExamQuestionCreateViewModel viewModel);
+        Task AddRange(int examId, IEnumerable<int> QuestionIDs);
+        Task DeleteRange(IEnumerable<ExamQuestionDTO> examQuestionDTOs);
     }
 }

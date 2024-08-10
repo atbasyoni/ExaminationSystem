@@ -9,10 +9,10 @@ namespace ExaminationSystem.Models
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int AddressID { get; set; }
-        public Address Address { get; set; }
+        public string Address { get; set; }
         public Gender Gender { get; set; }
         public bool IsDeleted { get; set; }
 
-        public List<RefreshToken> RefreshTokens { get; set; }
+        public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

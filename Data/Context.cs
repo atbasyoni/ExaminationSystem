@@ -3,7 +3,6 @@ using ExaminationSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace ExaminationSystem.Data
 {
@@ -37,8 +36,6 @@ namespace ExaminationSystem.Data
                 .HasValue<Student>("Student")
                 .HasValue<Instructor>("Instructor");
 
-
-            modelBuilder.ApplyConfiguration(new AddressConfiguration());
             modelBuilder.ApplyConfiguration(new ChoiceConfiguration());
             modelBuilder.ApplyConfiguration(new CourseConfiguration());
             modelBuilder.ApplyConfiguration(new CourseInstructorConfiguration());
@@ -51,7 +48,6 @@ namespace ExaminationSystem.Data
             modelBuilder.ApplyConfiguration(new StudentConfiguration());
         }
 
-        public DbSet<Address> Addresses { get; set; }
         public DbSet<Choice> Choices { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseInstructor> CourseInstructors { get; set; }

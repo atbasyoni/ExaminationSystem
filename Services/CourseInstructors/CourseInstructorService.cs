@@ -15,16 +15,17 @@ namespace ExaminationSystem.Services.CourseInstructors
             _repository = repository;
         }
 
-        public IEnumerable<CourseInstructorDTO> Get(Expression<Func<CourseInstructor, bool>> predicate)
+        public async Task<IEnumerable<CourseInstructorDTO>> Get(Expression<Func<CourseInstructor, bool>> predicate)
         {
-            IEnumerable<CourseInstructor> courseInstructors = _repository.GetAll(predicate).ToList();
+            IEnumerable<CourseInstructor> courseInstructors = (await _repository.GetAllAsync(predicate)).ToList();
             return courseInstructors.AsQueryable().Map<CourseInstructorDTO>();
         }
 
-        public void DeleteRange(IEnumerable<CourseInstructorDTO> courseInstructorDTOs)
+        public async Task DeleteRange(IEnumerable<CourseInstructorDTO> courseInstructorDTOs)
         {
             var courseInstructors = courseInstructorDTOs.AsQueryable().Map<CourseInstructor>();
             _repository.DeleteRange(courseInstructors);
+            await _repository.SaveChangesAsync();
         }
     }
 }

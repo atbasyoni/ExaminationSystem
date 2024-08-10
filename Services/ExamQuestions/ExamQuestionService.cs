@@ -16,40 +16,41 @@ namespace ExaminationSystem.Services.Exams
             _examQuestionRepository = examQuestionRepository;
         }
 
-        public void Add(ExamQuestionCreateViewModel viewModel)
+        public async Task Add(ExamQuestionCreateViewModel viewModel)
         {
-            var exam = _examQuestionRepository.Add(new ExamQuestion
+            var exam = await _examQuestionRepository.AddAsync(new ExamQuestion
             {
                 ExamID = viewModel.ExamID,
                 QuestionID = viewModel.QuestionID,
             });
 
-            _examQuestionRepository.SaveChanges();
+            await _examQuestionRepository.SaveChangesAsync();
         }
 
-        public void AddRange(int examId, IEnumerable<int> QuestionIDs)
+        public async Task AddRange(int examId, IEnumerable<int> QuestionIDs)
         {
             foreach (int Id in QuestionIDs)
             {
-                _examQuestionRepository.Add(new ExamQuestion
+                await _examQuestionRepository.AddAsync(new ExamQuestion
                 {
                     ExamID = examId,
                     QuestionID = Id,
                 });
             }
-            _examQuestionRepository.SaveChanges();
+            await _examQuestionRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<ExamQuestionDTO> Get(Expression<Func<ExamQuestion, bool>> predicate)
+        public async Task<IEnumerable<ExamQuestionDTO>> Get(Expression<Func<ExamQuestion, bool>> predicate)
         {
-            IEnumerable<ExamQuestion> examQuestions = _examQuestionRepository.GetAll(predicate).ToList();
+            IEnumerable<ExamQuestion> examQuestions = (await _examQuestionRepository.GetAllAsync(predicate)).ToList();
             return examQuestions.AsQueryable().Map<ExamQuestionDTO>();
         }
 
-        public void DeleteRange(IEnumerable<ExamQuestionDTO> examQuestionDTOs)
+        public async Task DeleteRange(IEnumerable<ExamQuestionDTO> examQuestionDTOs)
         {
             var examQuestions = examQuestionDTOs.AsQueryable().Map<ExamQuestion>();
             _examQuestionRepository.DeleteRange(examQuestions);
+            await _examQuestionRepository.SaveChangesAsync();
         }
     }
 }

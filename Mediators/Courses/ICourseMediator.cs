@@ -9,5 +9,6 @@ namespace ExaminationSystem.Mediators.Courses
         Task<int> AddCourse(CourseCreateDTO courseDTO);
         Task EditCourse(CourseDTO courseDTO);
         Task DeleteCourse(int id);
+        Task<int> AssignStudentToCourse(CourseStudentDTO courseStudentDTO);
     }
 }

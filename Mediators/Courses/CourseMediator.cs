@@ -73,5 +73,11 @@ namespace ExaminationSystem.Mediators.Courses
         {
             return await _courseService.GetByID(id);
         }
+
+        public async Task<int> AssignStudentToCourse(CourseStudentDTO courseStudentDTO)
+        {
+            int id = await _courseStudentService.Add(courseStudentDTO);
+            return id;
+        }
     }
 }

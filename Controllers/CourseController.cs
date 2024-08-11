@@ -88,14 +88,14 @@ namespace ExaminationSystem.Controllers
 
         [Authorize("Student")]
         [HttpPost]
-        public ResultViewModel<bool> EnrollStudent(int studentId, CourseViewModel courseVM)
+        public async Task<ResultViewModel<int>> EnrollStudent(CourseStudentDTO courseStudentDTO)
         {
-            var courseDTO = courseVM.MapOne<CourseDTO>();
-            _courseMediator.AssignStudentToCourse(studentId, );
+            int id = await _courseMediator.AssignStudentToCourse(courseStudentDTO);
 
-            return new ResultViewModel<bool>
+            return new ResultViewModel<int>
             {
-                IsSuccess = true
+                IsSuccess = true,
+                Data = id
             };
         }
     }

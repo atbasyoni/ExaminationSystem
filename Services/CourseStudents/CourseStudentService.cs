@@ -28,5 +28,15 @@ namespace ExaminationSystem.Services.CourseStudents
             _repository.DeleteRange(courseStudents);
             await _repository.SaveChangesAsync();
         }
+
+        public async Task<int> Add(CourseStudentDTO courseStudentDTO)
+        {
+            var courseStudent = courseStudentDTO.MapOne<CourseStudent>();
+
+            await _repository.AddAsync(courseStudent);
+            await _repository.SaveChangesAsync();
+
+            return courseStudent.Id;
+        }
     }
 }

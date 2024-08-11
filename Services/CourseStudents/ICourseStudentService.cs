@@ -8,5 +8,6 @@ namespace ExaminationSystem.Services.CourseStudents
     {
         Task<IEnumerable<CourseStudentDTO>> Get(Expression<Func<CourseStudent, bool>> predicate);
         Task DeleteRange(IEnumerable<CourseStudentDTO> courseStudentDTOs);
+        Task<int> Add(CourseStudentDTO courseStudentDTO);
     }
 }

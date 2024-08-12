@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ExaminationSystem.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExaminationSystem.Controllers
@@ -7,5 +9,6 @@ namespace ExaminationSystem.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
+
     }
 }

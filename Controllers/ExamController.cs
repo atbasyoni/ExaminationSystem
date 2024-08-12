@@ -76,11 +76,38 @@ namespace ExaminationSystem.Controllers
         public async Task<ResultViewModel<bool>> DeleteExam(int id)
         {
             await _examMediator.DeleteExam(id);
-            
+
             return new ResultViewModel<bool>
             {
                 IsSuccess = true
             };
+        }
+
+        [Authorize("Student")]
+        [HttpPost]
+        public async Task<ResultViewModel<bool>> TakeExam(ExamStudentCreateViewModel examStudentVM)
+        {
+            var examStudentDTO = examStudentVM.MapOne<ExamStudentCreateDTO>();
+            var isAssigned = await _examMediator.TakeExam(examStudentDTO);
+
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true,
+                Data = isAssigned,
+            };
+        }
+
+        public async Task<ResultViewModel<bool>> SubmitExam(ExamStudentViewModel examStudentVM)
+        {
+            var examStudentDTO = examStudentVM.MapOne<ExamStudentDTO>();
+            bool IsSubmitted = await _examMediator.SubmitExam(examStudentDTO);
+
+            return new ResultViewModel<bool>
+            {
+                IsSuccess = true,
+                Data = IsSubmitted
+            };
+
         }
     }
 }

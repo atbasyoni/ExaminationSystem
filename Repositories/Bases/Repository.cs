@@ -82,6 +82,11 @@ namespace ExaminationSystem.Repositories.Bases
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<T> First(Expression<Func<T, bool>> predicate)
+        {
+            return await (await GetAllAsync(predicate)).FirstOrDefaultAsync();
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

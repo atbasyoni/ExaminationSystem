@@ -10,10 +10,18 @@ namespace ExaminationSystem.Profiles
         public ExamProfile()
         {
             CreateMap<ExamViewModel, ExamDTO>().ReverseMap();
-            CreateMap<ExamCreateViewModel, ExamCreateDTO>();
+            CreateMap<ExamCreateViewModel, ExamCreateDTO>().ReverseMap();
 
             CreateMap<ExamDTO, Exam>().ReverseMap();
-            CreateMap<ExamCreateDTO, Exam>();
+            CreateMap<ExamCreateDTO, Exam>().ReverseMap();
+
+            CreateMap<ExamStudentCreateViewModel, ExamStudentCreateDTO>().ReverseMap();
+            CreateMap<ExamStudentViewModel, ExamStudentDTO>().ReverseMap();
+
+            CreateMap<ExamStudentCreateDTO, ExamStudent>();
+            CreateMap<ExamStudentDTO, ExamStudent>();
+
+            CreateMap<ExamAnswerDTO, ExamAnswer>();
         }
     }
 }

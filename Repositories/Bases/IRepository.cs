@@ -10,6 +10,7 @@ namespace ExaminationSystem.Repositories.Bases
         Task<T> GetByIDAsync(int id);
         Task<T> GetWithTrackingByIDAsync(int id);
         Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
+        Task<T> First(Expression<Func<T, bool>> predicate);
         Task<T> AddAsync(T entity);
         Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
         void Update(T entity);

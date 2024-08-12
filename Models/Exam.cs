@@ -19,5 +19,6 @@ namespace ExaminationSystem.Models
         public Instructor Instructor { get; set; }
 
         public HashSet<ExamQuestion> ExamQuestions { get; set; }
+        public List<ExamStudent> ExamStudents { get; set; }
     }
 }

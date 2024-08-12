@@ -9,6 +9,7 @@ namespace ExaminationSystem.Mediators.Exams
         Task<int> AddExam(ExamCreateDTO examDTO);
         Task DeleteExam(int id);
         Task EditExam(ExamDTO examDTO);
-
+        Task<bool> TakeExam(ExamStudentCreateDTO examStudentDTO);
+        Task<bool> SubmitExam(ExamStudentDTO examStudentDTO);
     }
 }
